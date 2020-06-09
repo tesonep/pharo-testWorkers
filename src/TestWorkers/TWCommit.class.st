@@ -3,10 +3,17 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'parentCommit',
-		'repository'
+		'repository',
+		'commitId'
 	],
 	#category : #'TestWorkers-Changes'
 }
+
+{ #category : #accessing }
+TWCommit >> commitId [
+	
+	^ commitId
+]
 
 { #category : #testing }
 TWCommit >> isInvalid [ 

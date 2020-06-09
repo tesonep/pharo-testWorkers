@@ -7,7 +7,7 @@ Class {
 { #category : #testing }
 TWInvalidCommit >> canStartTransaction [
 	
-	^ true
+	^ false
 ]
 
 { #category : #testing }
@@ -19,9 +19,5 @@ TWInvalidCommit >> isInvalid [
 { #category : #operations }
 TWInvalidCommit >> startTransaction [
 
-	| newCommit |
-	newCommit := TWMemoryCommit new.
-	newCommit parentCommit: self.
-	
-	repository currentCommit: newCommit
+	TWImpossibleToStartTransaction signal
 ]

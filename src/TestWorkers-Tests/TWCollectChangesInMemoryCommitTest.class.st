@@ -34,7 +34,9 @@ TWCollectChangesInMemoryCommitTest >> setUp [
 	super setUp.
 
 	existingClass := self newClass: #TWExistingClass.
-
+	
+	"Creates the initial commit"
+	repository createInitialCommit.
 	"Starting a transaction to be in a Memory Commit"
 	repository startTransaction 
 ]

@@ -15,6 +15,28 @@ TWRepository >> close [
 	changeCollector unregister
 ]
 
+{ #category : #operations }
+TWRepository >> commit [
+	
+	currentCommit commit
+]
+
+{ #category : #accessing }
+TWRepository >> commits [
+	^ commits
+]
+
+{ #category : #operations }
+TWRepository >> createInitialCommit [
+
+	currentCommit isInvalid ifFalse: [ self error: 'Already we have initial commit' ].
+	currentCommit := TWInitialCommit new.
+	currentCommit repository: self.
+	
+	commits removeAll.
+	commits add: currentCommit
+]
+
 { #category : #accessing }
 TWRepository >> currentCommit [
 	^ currentCommit
