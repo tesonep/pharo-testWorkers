@@ -28,12 +28,19 @@ TWCollectChangesInMemoryCommitTest >> findChangeOf: aName [.
 	^ self changes detect: [ :aChange | aChange className = aName ].
 ]
 
+{ #category : #utils }
+TWCollectChangesInMemoryCommitTest >> initialClassSetup [ 
+
+	existingClass := self newClass: #TWExistingClass.
+	existingClass compile: 'existingMethod ^ 31'
+]
+
 { #category : #running }
 TWCollectChangesInMemoryCommitTest >> setUp [ 
 
 	super setUp.
 
-	existingClass := self newClass: #TWExistingClass.
+	self initialClassSetup.
 	
 	"Creates the initial commit"
 	repository createInitialCommit.
@@ -99,6 +106,92 @@ TWCollectChangesInMemoryCommitTest >> testChangingAClassProduceAChangeForTheClas
 	self newClass: #TWExistingClass superclass: TestCase with: #(a) uses: #().
 	self assertCommitHasChangeOf: #TWExistingClass
 
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodAndProtocolHasTheNewDefinition [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 1' classified: 'a-protocol' notifying: nil.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change definition equals: 'existingMethod ^ 1'
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodAndProtocolHasTheOldDefinition [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 1' classified: 'a-protocol' notifying: nil.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change oldDefinition equals: 'existingMethod ^ 31'
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodAndProtocolProducesASingleChange [
+
+	existingClass compile: 'existingMethod ^ 1' classified: 'a-protocol' notifying: nil.
+
+	self assert: repository currentCommit changes size equals: 1
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodHasTheNewDefinition [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 1'.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change definition equals: 'existingMethod ^ 1'
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodHasTheNewProtocol [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 1' classified: 'a-protocol' notifying: nil.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change protocol equals: 'a-protocol'
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodHasTheOldDefinition [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 1'.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change oldDefinition equals: 'existingMethod ^ 31'
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingAMethodProducesAChangeInTheClass [
+
+	existingClass compile: 'existingMethod ^ 1'.
+	self assertCommitHasChangeOf: #TWExistingClass
+
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingTheProtocolOfAMethodHasTheNewProtocol [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 31' classified: 'a-protocol' notifying: nil.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change protocol equals: 'a-protocol'
+]
+
+{ #category : #'tests - modifying' }
+TWCollectChangesInMemoryCommitTest >> testChangingTheProtocolOfAMethodHasTheOldProtocol [
+
+	| change |
+	existingClass compile: 'existingMethod ^ 31' classified: 'a-protocol' notifying: nil.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change oldProtocol equals: #'as yet unclassified'
 ]
 
 { #category : #'tests - adding' }

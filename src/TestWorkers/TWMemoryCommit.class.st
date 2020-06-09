@@ -5,7 +5,7 @@ Class {
 		'changes',
 		'commitDate'
 	],
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Commits'
 }
 
 { #category : #changes }
@@ -44,6 +44,12 @@ TWMemoryCommit >> initialize [
 	super initialize.
 	changes := OrderedCollection new.
 	commitId := UUID new
+]
+
+{ #category : #changes }
+TWMemoryCommit >> lastChange [
+
+	^ changes size = 0 ifTrue: [ nil ] ifFalse: [ changes last ]
 ]
 
 { #category : #operations }

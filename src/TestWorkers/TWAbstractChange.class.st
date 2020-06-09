@@ -5,7 +5,7 @@ Class {
 		'className',
 		'definition'
 	],
-	#category : #TestWorkers
+	#category : #'TestWorkers-Changes'
 }
 
 { #category : #'instance creation' }
@@ -35,4 +35,10 @@ TWAbstractChange >> definition [
 TWAbstractChange >> fromAnnouncement: anAnnoucement [
 
 	className := anAnnoucement classAffected name
+]
+
+{ #category : #testing }
+TWAbstractChange >> isMethodModified [
+
+	^ false
 ]

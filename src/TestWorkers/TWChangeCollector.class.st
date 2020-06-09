@@ -54,6 +54,27 @@ TWChangeCollector >> methodAdded: aMethodAdded [
 		addChange: (TWMethodAdded fromAnnouncement: aMethodAdded)
 ]
 
+{ #category : #'system-events' }
+TWChangeCollector >> methodModified: aMethodModified [
+	| change |
+	"As the category of the method is informed before we need to check if it exists as the last change"
+	repository currentCommit lastChange
+		ifNotNil: [ :lastChange | 
+			(lastChange isMethodModified
+				and: [ lastChange definition = aMethodModified newMethod sourceCode ])
+				ifTrue: [ lastChange updateFromAnnouncement: aMethodModified. ^ self ]].
+
+	change := TWMethodModified fromAnnouncement: aMethodModified.
+	repository currentCommit addChange: change
+]
+
+{ #category : #'system events' }
+TWChangeCollector >> methodRecategorized: aMethodRecategorized [ 
+	
+	repository currentCommit
+		addChange: (TWMethodModified new fromRecategorization: aMethodRecategorized; yourself)
+]
+
 { #category : #accessing }
 TWChangeCollector >> repository [
 	^ repository

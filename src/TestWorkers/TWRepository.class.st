@@ -6,7 +6,7 @@ Class {
 		'commits',
 		'currentCommit'
 	],
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Repository'
 }
 
 { #category : #actions }

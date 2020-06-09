@@ -1,7 +1,7 @@
 Class {
 	#name : #TWInvalidCommit,
 	#superclass : #TWCommit,
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Commits'
 }
 
 { #category : #testing }
