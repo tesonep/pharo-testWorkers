@@ -6,7 +6,7 @@ Class {
 		'oldProtocol',
 		'protocol'
 	],
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Changes-Changes'
 }
 
 { #category : #accessing }

@@ -5,7 +5,7 @@ Class {
 		'changes',
 		'commitDate'
 	],
-	#category : #'TestWorkers-Commits'
+	#category : #'TestWorkers-Changes-Commits'
 }
 
 { #category : #changes }

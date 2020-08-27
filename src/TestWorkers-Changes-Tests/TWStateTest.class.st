@@ -1,7 +1,7 @@
 Class {
 	#name : #TWStateTest,
 	#superclass : #TWRepositoryTest,
-	#category : #'TestWorkers-Tests'
+	#category : #'TestWorkers-Changes-Tests'
 }
 
 { #category : #'tests - starting transactions - memory' }

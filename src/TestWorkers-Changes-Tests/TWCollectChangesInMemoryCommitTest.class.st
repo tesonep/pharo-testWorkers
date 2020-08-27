@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'existingClass'
 	],
-	#category : #'TestWorkers-Tests'
+	#category : #'TestWorkers-Changes-Tests'
 }
 
 { #category : #asserting }

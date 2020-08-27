@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'repository'
 	],
-	#category : #'TestWorkers-Tests'
+	#category : #'TestWorkers-Changes-Tests'
 }
 
 { #category : #running }

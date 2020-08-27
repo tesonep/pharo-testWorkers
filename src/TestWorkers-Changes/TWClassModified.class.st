@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'oldDefinition'
 	],
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Changes-Changes'
 }
 
 { #category : #accessing }

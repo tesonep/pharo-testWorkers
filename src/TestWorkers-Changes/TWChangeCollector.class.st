@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'repository'
 	],
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Changes-Changes'
 }
 
 { #category : #'system-events' }

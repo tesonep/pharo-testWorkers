@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'imageVersion'
 	],
-	#category : #'TestWorkers-Commits'
+	#category : #'TestWorkers-Changes-Commits'
 }
 
 { #category : #testing }

@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'createdClasses'
 	],
-	#category : #'TestWorkers-Tests'
+	#category : #'TestWorkers-Changes-Tests'
 }
 
 { #category : #'instance creation' }

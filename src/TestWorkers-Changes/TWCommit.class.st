@@ -6,7 +6,7 @@ Class {
 		'repository',
 		'commitId'
 	],
-	#category : #'TestWorkers-Commits'
+	#category : #'TestWorkers-Changes-Commits'
 }
 
 { #category : #accessing }

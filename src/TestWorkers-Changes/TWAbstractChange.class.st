@@ -5,7 +5,7 @@ Class {
 		'className',
 		'definition'
 	],
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Changes-Changes'
 }
 
 { #category : #'instance creation' }

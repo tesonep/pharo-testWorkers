@@ -1,7 +1,7 @@
 Class {
 	#name : #TWClassRemoved,
 	#superclass : #TWAbstractChange,
-	#category : #'TestWorkers-Changes'
+	#category : #'TestWorkers-Changes-Changes'
 }
 
 { #category : #accessing }
