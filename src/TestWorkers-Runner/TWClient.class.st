@@ -46,6 +46,12 @@ TWClient >> onUpdate: aValuable [
 	onUpdateBlock := aValuable.
 ]
 
+{ #category : #configuration }
+TWClient >> processName [ 
+
+	^ 'TWClient'
+]
+
 { #category : #accessing }
 TWClient >> requests [
 	^ requests
@@ -92,18 +98,6 @@ TWClient >> runTestResponse: aTWTestResponse [
 	testResult mergeWith: aTWTestResponse testResults.
 	
 	onUpdateBlock ifNotNil: [ UIManager default defer: onUpdateBlock ]
-]
-
-{ #category : #configuration }
-TWClient >> serverHost [
-
-	^ 'localhost'
-]
-
-{ #category : #configuration }
-TWClient >> serverPort [
-
-	^ 61613
 ]
 
 { #category : #accessing }

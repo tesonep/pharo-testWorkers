@@ -3,7 +3,8 @@ Class {
 	#superclass : #DrTestsPlugin,
 	#instVars : [
 		'client',
-		'drTestUI'
+		'drTestUI',
+		'startTime'
 	],
 	#category : #'TestWorkers-UI'
 }
@@ -61,6 +62,7 @@ TWRemoteTests >> runForConfiguration: aDTpluginConfiguration [
 
 	result := TWRemoteTestsResult new.
 	result client: client.
+	startTime := DateAndTime now.
 	
 	^ result
 ]
@@ -83,5 +85,10 @@ TWRemoteTests >> updateResults [
 	result := TWRemoteTestsResult new.
 	result client: client.
 	
+	client requests size = 0 
+		ifTrue: [ | duration |
+			duration := DateAndTime now - startTime. 
+			drTestUI updateStatus: 'Finished: ' , duration printString ]
+		ifFalse: [ drTestUI updateStatus: 'Running tests...' ].
 	drTestUI updateWithPluginResult: result
 ]

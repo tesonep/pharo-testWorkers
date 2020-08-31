@@ -5,7 +5,7 @@ Class {
 		'path',
 		'isRunning'
 	],
-	#category : #'TestWorkers-Watchdog'
+	#category : #'TestWorkers-Runner'
 }
 
 { #category : #'instance creation' }
@@ -26,6 +26,12 @@ TWWorkerInstance >> ensureRunning [
 		run ].
 	
 	isRunning := true.
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> id [
+	
+	^ path basename asInteger
 ]
 
 { #category : #accessing }

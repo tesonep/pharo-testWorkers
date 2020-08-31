@@ -1,6 +1,9 @@
 Class {
 	#name : #TWRunner,
 	#superclass : #TWAbstractConnected,
+	#instVars : [
+		'watched'
+	],
 	#classVars : [
 		'UniqueInstance'
 	],
@@ -22,6 +25,12 @@ TWRunner class >> uniqueInstance [
 TWRunner >> inputQueueName [ 
 
 	^ 'testRequest'
+]
+
+{ #category : #configuration }
+TWRunner >> processName [ 
+
+	^ 'TWRunner'
 ]
 
 { #category : #operations }
@@ -49,14 +58,17 @@ TWRunner >> runTestMessage: aTWMessage [
 	]
 ]
 
-{ #category : #configuration }
-TWRunner >> serverHost [
+{ #category : #operations }
+TWRunner >> startWatched [
 
-	^ 'localhost'
+	self start.
+	watched := TWWatched new.
+	watched start.
 ]
 
-{ #category : #configuration }
-TWRunner >> serverPort [
-
-	^ 61613
+{ #category : #operations }
+TWRunner >> stop [ 
+	
+	super stop.
+	watched ifNotNil: [ watched stop. watched := nil ].
 ]

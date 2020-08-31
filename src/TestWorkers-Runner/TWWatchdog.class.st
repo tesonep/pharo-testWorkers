@@ -6,7 +6,7 @@ Class {
 		'templatePath',
 		'instances'
 	],
-	#category : #'TestWorkers-Watchdog'
+	#category : #'TestWorkers-Runner'
 }
 
 { #category : #'as yet unclassified' }
@@ -28,7 +28,7 @@ TWWatchdog >> canBeInstance: aDiskDirectoryEntry [
 TWWatchdog >> createInstance: anId [ 
 
 	| directory |
-	
+
 	directory := rootDirectory / anId asString.
 	directory ensureCreateDirectory.
 	templatePath copyAllTo: directory.
@@ -105,6 +105,12 @@ TWWatchdog >> initialize [
 	self readWorkers.
 ]
 
+{ #category : #configuration }
+TWWatchdog >> inputQueueName [ 
+
+	^ 'watchdog'
+]
+
 { #category : #'instance creation' }
 TWWatchdog >> installWorker [
 
@@ -140,6 +146,12 @@ TWWatchdog >> launchInstances [
 	instances do: [ :anInstance | anInstance ensureRunning ]
 ]
 
+{ #category : #configuration }
+TWWatchdog >> processName [ 
+
+	^ 'TWWatchdog'
+]
+
 { #category : #initialization }
 TWWatchdog >> readWorkers [
 	
@@ -160,4 +172,11 @@ TWWatchdog >> rootDirectory [
 { #category : #accessing }
 TWWatchdog >> rootDirectory: anObject [
 	rootDirectory := anObject
+]
+
+{ #category : #operations }
+TWWatchdog >> sendPing [
+	
+	TWPing new
+		sendOn: connection
 ]

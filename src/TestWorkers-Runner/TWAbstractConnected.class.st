@@ -74,6 +74,18 @@ TWAbstractConnected >> processMessage: aStampMessageFrame [
 	
 ]
 
+{ #category : #configuration }
+TWAbstractConnected >> processName [ 
+
+	^ self subclassResponsibility
+]
+
+{ #category : #configuration }
+TWAbstractConnected >> processPriority [
+	
+	^ Processor userSchedulingPriority
+]
+
 { #category : #operations }
 TWAbstractConnected >> processRequest [
 
@@ -90,13 +102,13 @@ TWAbstractConnected >> processRequest [
 { #category : #configuration }
 TWAbstractConnected >> serverHost [
 
-	^ self subclassResponsibility 
+	^ 'localhost'
 ]
 
 { #category : #configuration }
 TWAbstractConnected >> serverPort [
 
-	^ self subclassResponsibility 
+	^ 61613
 ]
 
 { #category : #operations }
@@ -112,7 +124,7 @@ TWAbstractConnected >> startListener [
 	listenerProcess := [ 
 		[ connection isConnected 
 			ifFalse: [ self doConnect ].
-		  self processRequest ] repeat ] fork.
+		  self processRequest ] repeat ] forkAt: self processPriority named: self processName.
 ]
 
 { #category : #operations }
@@ -122,5 +134,5 @@ TWAbstractConnected >> stop [
 		"If the message is incomplete I don't care"
 		"I am closing it" ].
 	
-	listenerProcess terminate.
+	listenerProcess ifNotNil: [ listenerProcess terminate ].
 ]
