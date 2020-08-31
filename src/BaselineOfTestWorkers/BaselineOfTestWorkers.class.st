@@ -16,7 +16,7 @@ BaselineOfTestWorkers >> baseline: spec [
 			"Projects"
 			spec 
 				baseline: 'Stamp' 
-				with: [ spec repository: 'github://svenvc/stamp' ].
+				with: [ spec repository: 'github://tesonep/stamp' ].
 
 			"Packages"
 			spec
