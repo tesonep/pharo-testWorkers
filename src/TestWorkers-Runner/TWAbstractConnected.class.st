@@ -83,8 +83,7 @@ TWAbstractConnected >> processRequest [
 	 self processMessage: msg] 
 		on: ConnectionTimedOut , ZnIncomplete do: [ ]]
 		on: Error do:[:e | 
-			self inform: e messageText. connection.
-			self doConnect ].
+			self inform: e messageText. connection ].
 	
 ]
 
@@ -111,8 +110,9 @@ TWAbstractConnected >> start [
 TWAbstractConnected >> startListener [
 	
 	listenerProcess := [ 
-		[ connection isConnected ] 
-			whileTrue: [ self processRequest ] ] fork.
+		[ connection isConnected 
+			ifFalse: [ self doConnect ].
+		  self processRequest ] repeat ] fork.
 ]
 
 { #category : #operations }

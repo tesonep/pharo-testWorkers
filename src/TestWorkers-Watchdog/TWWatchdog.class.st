@@ -34,6 +34,26 @@ TWWatchdog >> createInstance: anId [
 	templatePath copyAllTo: directory.
 ]
 
+{ #category : #'instance creation' }
+TWWatchdog >> downloadAndUnzip [ 
+
+	| zipFile zipArchive |
+	zipFile := templatePath / self imageUrl file.
+	
+	zipFile exists 
+		ifFalse: [
+			ZnClient new
+				url: self imageUrl;
+				downloadTo: templatePath ] . 
+	
+	zipArchive := ZipArchive new readFrom: zipFile.
+	
+	zipArchive extractAllTo: templatePath overwrite: true.
+	zipArchive close.
+	
+	zipFile ensureDelete.
+]
+
 { #category : #initialization }
 TWWatchdog >> ensureInstances: aNumber [
 
@@ -50,7 +70,16 @@ TWWatchdog >> ensureInstances: aNumber [
 TWWatchdog >> ensureTemplate [
 	
 	templatePath exists ifFalse: [ templatePath ensureCreateDirectory ].
-	(templatePath / 'Pharo.image') exists ifFalse: [ ^ self halt ].
+	(templatePath / 'worker.image') exists 
+		ifTrue: [ ^ self ].
+
+	self downloadAndUnzip.
+	self installWorker.
+]
+
+{ #category : #instances }
+TWWatchdog >> imageUrl [
+	^ 'http://files.pharo.org/image/90/latest-64.zip' asUrl
 ]
 
 { #category : #accessing }
@@ -61,6 +90,41 @@ TWWatchdog >> initialize [
 
 	self ensureTemplate.
 	self readWorkers.
+]
+
+{ #category : #'instance creation' }
+TWWatchdog >> installWorker [
+
+	| downloadedImageName possibleImages |
+	
+	possibleImages := templatePath childrenMatching: '*.image'.
+	self assert: possibleImages size = 1.
+	
+	downloadedImageName := possibleImages first basename.
+
+	OSSUnixSubprocess new
+		command: Smalltalk vm fileName;
+		arguments: { '--headless'. downloadedImageName. 'save'. 'worker' };
+		workingDirectory: templatePath fullName;
+		runAndWaitOnExitDo: [ :process | 
+			process isSuccess ifFalse: [ 1halt. ]].
+
+	OSSUnixSubprocess new
+		command: Smalltalk vm fileName;
+		arguments: { '--headless'. 'worker.image'. 'eval'. '--save'. 'Metacello new
+	baseline: ''TestWorkers'';
+	repository: ''github://tesonep/pharo-testWorkers'';
+	load: ''runner''' };
+		workingDirectory: templatePath fullName;
+		runAndWaitOnExitDo: [ :process | 
+			process isSuccess ifFalse: [ 1halt. ]]		
+	
+]
+
+{ #category : #'instances control' }
+TWWatchdog >> launchInstances [
+	
+	instances do: [ :anInstance | anInstance ensureRunning ]
 ]
 
 { #category : #initialization }
