@@ -21,11 +21,13 @@ BaselineOfTestWorkers >> baseline: spec [
 			"Packages"
 			spec
 				package: 'TestWorkers-Changes';
-				package: 'TestWorkers-Changes-Tests' with: [ spec requires: 'TestWorkers-Changes' ].
+				package: 'TestWorkers-Changes-Tests' with: [ spec requires: 'TestWorkers-Changes' ];
+				package: 'TestWorkers-Runner' with: [ spec requires: 'Stamp' ].
 
 			"Groups"
 			spec
 				group: 'core' with: #('TestWorkers-Changes');
 				group: 'tests' with: #('TestWorkers-Changes-Tests');
+				group: 'runner' with: #('TestWorkers-Runner' core);
 				group: 'default' with: #(core tests) ]
 ]
