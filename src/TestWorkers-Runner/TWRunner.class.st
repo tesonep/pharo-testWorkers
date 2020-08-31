@@ -34,9 +34,7 @@ TWRunner >> processMessage: aStampMessageFrame [
 	  connection write: aStampMessageFrame ackFrame ] 
 		onErrorDo: [:e | | nackFrame |
 			nackFrame := aStampMessageFrame nackFrame.
-			nackFrame headerAt: 'requeue' put: 'false'.
-			connection write: nackFrame.
-			e pass]
+			connection write: nackFrame ]
 	
 	
 ]

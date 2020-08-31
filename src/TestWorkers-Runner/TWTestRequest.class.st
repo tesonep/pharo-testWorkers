@@ -8,6 +8,11 @@ Class {
 }
 
 { #category : #'dr-test' }
+TWTestRequest >> drTestsBrowse [
+	(self class environment at: testClassName) browse
+]
+
+{ #category : #'dr-test' }
 TWTestRequest >> drTestsName [
 	
 	^ testClassName 

@@ -49,8 +49,7 @@ TWClient >> processMessage: aStampMessageFrame [
 		connection write: aStampMessageFrame ackFrame 
 	]	onErrorDo: [:e | | nackFrame |
 			nackFrame := aStampMessageFrame nackFrame.
-			connection write: nackFrame.
-			e pass ].
+			connection write: nackFrame ].
 	
 	
 ]
