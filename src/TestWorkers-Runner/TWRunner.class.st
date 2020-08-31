@@ -24,21 +24,6 @@ TWRunner >> inputQueueName [
 	^ 'testRequest'
 ]
 
-{ #category : #processing }
-TWRunner >> processMessage: aStampMessageFrame [
-
-	| message |
-	message := STON fromString: aStampMessageFrame body.
-	
-	[ message execute: self.
-	  connection write: aStampMessageFrame ackFrame ] 
-		onErrorDo: [:e | | nackFrame |
-			nackFrame := aStampMessageFrame nackFrame.
-			connection write: nackFrame ]
-	
-	
-]
-
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
@@ -51,6 +36,7 @@ TWRunner >> runTestMessage: aTWMessage [
 		
 	TWTestResponse new
 		testResults: testResults;
+		testClassName: aTWMessage testClassName;
 		uuid: aTWMessage uuid;
 		sendOn: connection.
 ]

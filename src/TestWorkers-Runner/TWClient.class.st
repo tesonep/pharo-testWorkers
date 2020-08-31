@@ -4,13 +4,20 @@ Class {
 	#instVars : [
 		'requests',
 		'testResult',
-		'onUpdateBlock'
+		'onUpdateBlock',
+		'executionErrors'
 	],
 	#classVars : [
 		'UniqueInstance'
 	],
 	#category : #'TestWorkers-Runner'
 }
+
+{ #category : #'instance creation' }
+TWClient class >> reset [
+	
+	UniqueInstance := nil
+]
 
 { #category : #'instance creation' }
 TWClient class >> uniqueInstance [
@@ -24,6 +31,7 @@ TWClient >> initialize [
 	super initialize.
 	requests := Dictionary new.
 	testResult := TestResult new.
+	executionErrors := OrderedCollection new.
 ]
 
 { #category : #configuration }
@@ -38,22 +46,6 @@ TWClient >> onUpdate: aValuable [
 	onUpdateBlock := aValuable.
 ]
 
-{ #category : #processing }
-TWClient >> processMessage: aStampMessageFrame [
-
-	| message |
-	
-	[ 
-		message := STON fromString: aStampMessageFrame body.
-		message execute: self.
-		connection write: aStampMessageFrame ackFrame 
-	]	onErrorDo: [:e | | nackFrame |
-			nackFrame := aStampMessageFrame nackFrame.
-			connection write: nackFrame ].
-	
-	
-]
-
 { #category : #accessing }
 TWClient >> requests [
 	^ requests
@@ -63,7 +55,8 @@ TWClient >> requests [
 TWClient >> resetResults [
 
 	testResult := TestResult new.
-	requests := Dictionary new
+	requests := Dictionary new.
+	executionErrors := OrderedCollection new.
 	
 ]
 
@@ -80,6 +73,16 @@ TWClient >> runTestClass: aTestCase [
 	requests at: request uuid put: request.
 		
 	
+]
+
+{ #category : #operations }
+TWClient >> runTestExecutionError: aTWTestExecutionError [
+
+	requests removeKey: aTWTestExecutionError uuid ifAbsent: [ ^ self ].
+	
+	executionErrors add: aTWTestExecutionError.
+	
+	onUpdateBlock ifNotNil: [ UIManager default defer: onUpdateBlock ]
 ]
 
 { #category : #operations }

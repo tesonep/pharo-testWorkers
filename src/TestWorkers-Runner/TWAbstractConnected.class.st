@@ -59,9 +59,19 @@ TWAbstractConnected >> inputQueueName [
 ]
 
 { #category : #processing }
-TWAbstractConnected >> processMessage: msg [
+TWAbstractConnected >> processMessage: aStampMessageFrame [
+
+	| message |
 	
-	^ self subclassResponsibility 
+	[  message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
+		message execute: self.
+		connection write: aStampMessageFrame ackFrame 
+	]	onErrorDo: [:e | | nackFrame |
+			nackFrame := aStampMessageFrame nackFrame.
+			connection write: nackFrame.
+			e debug ].
+	
+	
 ]
 
 { #category : #operations }
@@ -71,9 +81,7 @@ TWAbstractConnected >> processRequest [
 
 	[[msg := connection readMessage.
 	 self processMessage: msg] 
-		on: ConnectionTimedOut do: [ 
-			self inform: 'Timeout'.
-			"If there is a timeout I continue" ]]
+		on: ConnectionTimedOut , ZnIncomplete do: [ ]]
 		on: Error do:[:e | 
 			self inform: e messageText. connection.
 			self doConnect ].
@@ -110,7 +118,7 @@ TWAbstractConnected >> startListener [
 { #category : #operations }
 TWAbstractConnected >> stop [
 
-	[connection close] on: ZnIncomplete do: [ 
+	[connection close] on: ZnIncomplete, Error do: [ 
 		"If the message is incomplete I don't care"
 		"I am closing it" ].
 	

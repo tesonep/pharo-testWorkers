@@ -7,16 +7,16 @@ Class {
 	#category : #'TestWorkers-Runner'
 }
 
-{ #category : #converting }
-TWMessage >> asRequestBody [
-
-	^  STON toString: self.
-]
-
 { #category : #sending }
 TWMessage >> execute: client [
 
 	^ self subclassResponsibility
+]
+
+{ #category : #sending }
+TWMessage >> handleSendError: anError on: connection [
+
+	anError pass
 ]
 
 { #category : #sending }
@@ -38,13 +38,19 @@ TWMessage >> sendOn: connection [
 
 	| frame |
 
-	(frame := connection newSendFrameTo: self queueName)
-		text: self asRequestBody;
+	[(frame := connection newSendFrameTo: self queueName)
+		bytes: self serializedData;
 		headerAt: 'uuid' put: uuid. 
 		
-	connection write: frame.
-
+	connection write: frame] onErrorDo: [ :e | self handleSendError: e on: connection ].
 	
+]
+
+{ #category : #sending }
+TWMessage >> serializedData [
+
+	^ ByteArray streamContents: [ :s | 
+		  FLSerializer serialize: self on: s ]
 ]
 
 { #category : #accessing }
