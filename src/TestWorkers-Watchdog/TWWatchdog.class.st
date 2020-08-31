@@ -34,6 +34,18 @@ TWWatchdog >> createInstance: anId [
 	templatePath copyAllTo: directory.
 ]
 
+{ #category : #initialization }
+TWWatchdog >> deleteDownloadedImage [
+	
+	| downloadedImages |
+	downloadedImages := (templatePath childrenMatching: '*.image') 
+		reject: [ :e | e basename = 'worker.image' ].
+		
+	downloadedImages do: [ :anImage | 
+		anImage ensureDelete.
+		(anImage withExtension: 'changes') ensureDelete ].
+]
+
 { #category : #'instance creation' }
 TWWatchdog >> downloadAndUnzip [ 
 
@@ -75,9 +87,10 @@ TWWatchdog >> ensureTemplate [
 
 	self downloadAndUnzip.
 	self installWorker.
+	self deleteDownloadedImage.
 ]
 
-{ #category : #instances }
+{ #category : #'instance creation' }
 TWWatchdog >> imageUrl [
 	^ 'http://files.pharo.org/image/90/latest-64.zip' asUrl
 ]

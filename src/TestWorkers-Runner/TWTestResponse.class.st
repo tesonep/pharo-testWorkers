@@ -19,7 +19,7 @@ TWTestResponse >> handleSendError: anError on: connection [
 
 	TWTestExecutionError new
 		testClassName: testClassName;
-		exceptionMessage: anError;
+		exceptionMessage: anError messageText;
 		serializedException: (self tryToSerialize: anError);
 		uuid: self uuid;
 		sendOn: connection

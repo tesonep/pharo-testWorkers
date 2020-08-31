@@ -29,7 +29,7 @@ TWRunner >> runTestMessage: aTWMessage [
 
 	| testResults testClass |
 	
-	aTWMessage testClassName traceCr.
+	[aTWMessage testClassName traceCr.
 	
 	testClass := self class environment at: aTWMessage testClassName asSymbol.
 	testResults := testClass buildSuite run.
@@ -38,7 +38,15 @@ TWRunner >> runTestMessage: aTWMessage [
 		testResults: testResults;
 		testClassName: aTWMessage testClassName;
 		uuid: aTWMessage uuid;
-		sendOn: connection.
+		sendOn: connection.] onErrorDo: [ :anError | 
+		
+			TWTestExecutionError new
+				testClassName: aTWMessage testClassName;
+				exceptionMessage: anError messageText;
+				serializedException: nil;
+				uuid: aTWMessage uuid;
+				sendOn: connection 
+	]
 ]
 
 { #category : #configuration }
