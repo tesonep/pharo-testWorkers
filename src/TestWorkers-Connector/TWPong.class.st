@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'path'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #sending }

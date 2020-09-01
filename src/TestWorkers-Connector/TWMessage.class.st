@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'uuid'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #sending }

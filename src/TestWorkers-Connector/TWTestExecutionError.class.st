@@ -6,7 +6,7 @@ Class {
 		'exceptionMessage',
 		'serializedException'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #accessing }

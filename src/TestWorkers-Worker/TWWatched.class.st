@@ -1,7 +1,7 @@
 Class {
 	#name : #TWWatched,
 	#superclass : #TWAbstractConnected,
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Worker'
 }
 
 { #category : #'as yet unclassified' }

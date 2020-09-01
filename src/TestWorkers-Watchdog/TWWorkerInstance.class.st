@@ -6,7 +6,7 @@ Class {
 		'isRunning',
 		'lastPong'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Watchdog'
 }
 
 { #category : #'instance creation' }

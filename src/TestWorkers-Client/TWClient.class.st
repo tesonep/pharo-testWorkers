@@ -10,7 +10,7 @@ Class {
 	#classVars : [
 		'UniqueInstance'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Client'
 }
 
 { #category : #'instance creation' }

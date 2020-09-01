@@ -8,7 +8,7 @@ Class {
 		'instances',
 		'pingService'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Watchdog'
 }
 
 { #category : #'as yet unclassified' }

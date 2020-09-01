@@ -4,7 +4,7 @@ Class {
 	#instVars : [
 		'testClassName'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #'dr-test' }

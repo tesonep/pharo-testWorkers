@@ -5,7 +5,7 @@ Class {
 		'testResults',
 		'testClassName'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #sending }

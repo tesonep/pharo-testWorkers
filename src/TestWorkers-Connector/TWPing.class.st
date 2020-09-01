@@ -1,7 +1,7 @@
 Class {
 	#name : #TWPing,
 	#superclass : #TWMessage,
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #sending }

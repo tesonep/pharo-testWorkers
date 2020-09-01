@@ -6,7 +6,7 @@ Class {
 		'subscription',
 		'listenerProcess'
 	],
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
 
 { #category : #accessing }

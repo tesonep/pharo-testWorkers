@@ -1,6 +1,6 @@
 Extension { #name : #RPackage }
 
-{ #category : #'*TestWorkers-Runner' }
+{ #category : #'*TestWorkers-Worker' }
 RPackage >> asTestSuite [
 	
 	| testSuite testClasses |

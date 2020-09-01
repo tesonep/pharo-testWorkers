@@ -25,13 +25,21 @@ BaselineOfTestWorkers >> baseline: spec [
 			"Packages"
 			spec
 				package: 'TestWorkers-Changes';
-				package: 'TestWorkers-Changes-Tests' with: [ spec requires: 'TestWorkers-Changes' ];
-				package: 'TestWorkers-Runner' with: [ spec requires: #('Stamp' 'OSSubprocess') ].
+				package: 'TestWorkers-Connector' with: [ spec requires: #('Stamp') ];
+				package: 'TestWorkers-Watchdog' 
+					with: [ spec requires: #('OSSubprocess' 'TestWorkers-Connector') ];
+				package: 'TestWorkers-Worker' with: [ spec requires: #('TestWorkers-Connector') ];
+				package: 'TestWorkers-Client' with: [ spec requires: #('TestWorkers-Connector') ];
+				package: 'TestWorkers-UI' with: [ spec requires: #('TestWorkers-Client') ];
+				package: 'TestWorkers-Changes-Tests' with: [ spec requires: 'TestWorkers-Changes' ].
 
 			"Groups"
 			spec
-				group: 'core' with: #('TestWorkers-Changes');
+				group: 'changes' with: #('TestWorkers-Changes');
 				group: 'tests' with: #('TestWorkers-Changes-Tests');
-				group: 'runner' with: #('TestWorkers-Runner' core);
-				group: 'default' with: #(core tests) ]
+				group: 'worker' with: #('TestWorkers-Worker');
+				group: 'client' with: #('TestWorkers-Client');
+				group: 'watchdog' with: #('TestWorkers-Watchdog');	
+				group: 'ui' with: #('TestWorkers-UI');				
+				group: 'default' with: #(changes tests worker client watchdog ui) ]
 ]

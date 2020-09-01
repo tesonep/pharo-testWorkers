@@ -1,5 +1,5 @@
 Class {
 	#name : #TWKill,
 	#superclass : #TWMessage,
-	#category : #'TestWorkers-Runner'
+	#category : #'TestWorkers-Connector'
 }
