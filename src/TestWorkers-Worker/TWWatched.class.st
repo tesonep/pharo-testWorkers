@@ -31,6 +31,6 @@ TWWatched >> processPriority [
 { #category : #operations }
 TWWatched >> shutdown [
 
-	TWRunner uniqueInstance stop.
-	Smalltalk snapshot: false andQuit: true.
+	[TWRunner uniqueInstance stop] 
+		ensure: [Smalltalk snapshot: false andQuit: true].
 ]
