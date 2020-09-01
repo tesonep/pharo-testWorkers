@@ -3,7 +3,8 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'path',
-		'isRunning'
+		'isRunning',
+		'lastPong'
 	],
 	#category : #'TestWorkers-Runner'
 }
@@ -16,16 +17,28 @@ TWWorkerInstance class >> directory: aPath [
 		yourself.
 ]
 
+{ #category : #accessing }
+TWWorkerInstance >> checkAlive [
+
+	lastPong ifNil: [ ^ self ].
+
+	(DateAndTime now - lastPong) > 90 seconds 
+		ifTrue: [ isRunning := false. ] 
+]
+
 { #category : #'instance control' }
 TWWorkerInstance >> ensureRunning [
 	
 	self isRunning ifFalse: [ 
 	  OSSUnixSubprocess new
-		shellCommand: Smalltalk vm fileName , ' --headless ' , self imageName , ' eval --no-quit "TWRunner uniqueInstance start"&';
+		shellCommand: Smalltalk vm fileName , ' --headless ' , self imageName , ' eval --no-quit "TWRunner uniqueInstance startWatched"';
 		workingDirectory: path fullName;
-		run ].
+		run.
+		lastPong := DateAndTime now.
+		isRunning := true.
+	].
 	
-	isRunning := true.
+
 ]
 
 { #category : #accessing }
@@ -41,6 +54,13 @@ TWWorkerInstance >> imageName [
 ]
 
 { #category : #accessing }
+TWWorkerInstance >> initialize [ 
+
+	super initialize.
+	lastPong := DateAndTime now.
+]
+
+{ #category : #accessing }
 TWWorkerInstance >> isRunning [
 	
 	^ isRunning ifNil: [ isRunning := false ]
@@ -52,6 +72,18 @@ TWWorkerInstance >> isRunning: aFalse [
 ]
 
 { #category : #accesssing }
+TWWorkerInstance >> path [
+
+	^ path
+]
+
+{ #category : #accesssing }
 TWWorkerInstance >> path: aDiskDirectoryEntry [ 
 	path := aDiskDirectoryEntry
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> pongReceived [
+
+	lastPong := DateAndTime now
 ]

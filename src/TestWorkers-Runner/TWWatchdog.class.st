@@ -4,7 +4,9 @@ Class {
 	#instVars : [
 		'rootDirectory',
 		'templatePath',
-		'instances'
+		'minNumberInstances',
+		'instances',
+		'pingService'
 	],
 	#category : #'TestWorkers-Runner'
 }
@@ -24,7 +26,14 @@ TWWatchdog >> canBeInstance: aDiskDirectoryEntry [
 	^ aDiskDirectoryEntry asFileReference basename asInteger isNotNil
 ]
 
-{ #category : #'instance creation' }
+{ #category : #'instances-control' }
+TWWatchdog >> checkDeadInstances [
+	
+	instances do: [ :anInstance | anInstance checkAlive ].
+	self launchInstances.
+]
+
+{ #category : #'instances-creation' }
 TWWatchdog >> createInstance: anId [ 
 
 	| directory |
@@ -32,6 +41,17 @@ TWWatchdog >> createInstance: anId [
 	directory := rootDirectory / anId asString.
 	directory ensureCreateDirectory.
 	templatePath copyAllTo: directory.
+]
+
+{ #category : #initialization }
+TWWatchdog >> createTemplate [
+	
+	templatePath exists 
+		ifFalse: [ templatePath ensureCreateDirectory ].
+
+	self downloadAndUnzip.
+	self installWorker.
+	self deleteDownloadedImage.
 ]
 
 { #category : #initialization }
@@ -46,7 +66,7 @@ TWWatchdog >> deleteDownloadedImage [
 		(anImage withExtension: 'changes') ensureDelete ].
 ]
 
-{ #category : #'instance creation' }
+{ #category : #'instances-creation' }
 TWWatchdog >> downloadAndUnzip [ 
 
 	| zipFile zipArchive |
@@ -69,6 +89,7 @@ TWWatchdog >> downloadAndUnzip [
 { #category : #initialization }
 TWWatchdog >> ensureInstances: aNumber [
 
+	minNumberInstances := aNumber.
 	instances size >= aNumber ifTrue: [ ^ self ].
 	
 	1 to: aNumber do: [ :index | 
@@ -80,29 +101,32 @@ TWWatchdog >> ensureInstances: aNumber [
 
 { #category : #initialization }
 TWWatchdog >> ensureTemplate [
-	
-	templatePath exists ifFalse: [ templatePath ensureCreateDirectory ].
-	(templatePath / 'worker.image') exists 
-		ifTrue: [ ^ self ].
 
-	self downloadAndUnzip.
-	self installWorker.
-	self deleteDownloadedImage.
+	self hasTemplate ifFalse: [ self createTemplate ]
 ]
 
-{ #category : #'instance creation' }
+{ #category : #initialization }
+TWWatchdog >> hasTemplate [
+
+	^ (templatePath / self templateName ) exists 
+		
+]
+
+{ #category : #'instances-creation' }
 TWWatchdog >> imageUrl [
 	^ 'http://files.pharo.org/image/90/latest-64.zip' asUrl
 ]
 
-{ #category : #accessing }
+{ #category : #initialization }
 TWWatchdog >> initialize [
 
 	super initialize.
 	templatePath := rootDirectory / 'template'.
+	minNumberInstances := 0.
+	instances := OrderedCollection new.
 
-	self ensureTemplate.
-	self readWorkers.
+	self hasTemplate 
+		ifTrue: [ self readWorkers ].
 ]
 
 { #category : #configuration }
@@ -111,7 +135,7 @@ TWWatchdog >> inputQueueName [
 	^ 'watchdog'
 ]
 
-{ #category : #'instance creation' }
+{ #category : #'instances-creation' }
 TWWatchdog >> installWorker [
 
 	| downloadedImageName possibleImages |
@@ -140,10 +164,20 @@ TWWatchdog >> installWorker [
 	
 ]
 
-{ #category : #'instances control' }
+{ #category : #'instances-control' }
 TWWatchdog >> launchInstances [
 	
 	instances do: [ :anInstance | anInstance ensureRunning ]
+]
+
+{ #category : #accessing }
+TWWatchdog >> minNumberInstances [
+	^ minNumberInstances
+]
+
+{ #category : #accessing }
+TWWatchdog >> minNumberInstances: anObject [
+	minNumberInstances := anObject
 ]
 
 { #category : #configuration }
@@ -164,6 +198,15 @@ TWWatchdog >> readWorkers [
 
 ]
 
+{ #category : #operations }
+TWWatchdog >> receivePong: aTWPong [
+
+	instances 
+		detect: [ :anInstance | anInstance path fullName = aTWPong path ]
+		ifFound: [ :anInstance | anInstance pongReceived ]
+		ifNone: [  ].
+]
+
 { #category : #accessing }
 TWWatchdog >> rootDirectory [
 	^ rootDirectory
@@ -178,5 +221,30 @@ TWWatchdog >> rootDirectory: anObject [
 TWWatchdog >> sendPing [
 	
 	TWPing new
-		sendOn: connection
+		sendOn: connection.
+	self checkDeadInstances.
+]
+
+{ #category : #operations }
+TWWatchdog >> start [
+
+	super start.
+	pingService := TKTParameterizableService new.
+	pingService name: 'TWPingService'.
+	pingService stepDelay: 1 second.
+	pingService step: [ self sendPing ].
+	pingService start.
+]
+
+{ #category : #operations }
+TWWatchdog >> stop [ 
+	
+	super stop.
+	pingService ifNotNil: [ pingService stop ].
+]
+
+{ #category : #initialization }
+TWWatchdog >> templateName [ 
+
+	^ 'worker.image'
 ]

@@ -10,7 +10,7 @@ Class {
 { #category : #sending }
 TWPong >> execute: client [
 
-	('Pong:' , path) traceCr.
+	client receivePong: self
 ]
 
 { #category : #sending }
@@ -18,6 +18,12 @@ TWPong >> initialize [
 	
 	super initialize.
 	path := FileLocator workingDirectory resolve fullName
+]
+
+{ #category : #accessing }
+TWPong >> path [ 
+
+	^ path
 ]
 
 { #category : #sending }
