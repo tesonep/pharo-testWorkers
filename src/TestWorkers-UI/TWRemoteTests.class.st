@@ -57,7 +57,7 @@ TWRemoteTests >> runForConfiguration: aDTpluginConfiguration [
 	
 	client onUpdate: (WeakMessageSend receiver: self selector: #updateResults).
 
-	(aDTpluginConfiguration items reject: [ :e | e isAbstract ]) 
+	(aDTpluginConfiguration items reject: [ :e | e isAbstract ]) shuffle
 		do: [ :aClass | client runTestClass: aClass ].
 
 	result := TWRemoteTestsResult new.
