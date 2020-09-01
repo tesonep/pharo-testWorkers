@@ -18,11 +18,15 @@ BaselineOfTestWorkers >> baseline: spec [
 				baseline: 'Stamp' 
 				with: [ spec repository: 'github://tesonep/stamp' ].
 
+			spec 
+				baseline: 'OSSubprocess' 
+				with: [ spec repository: 'github://pharo-contributions/OSSubprocess' ].
+
 			"Packages"
 			spec
 				package: 'TestWorkers-Changes';
 				package: 'TestWorkers-Changes-Tests' with: [ spec requires: 'TestWorkers-Changes' ];
-				package: 'TestWorkers-Runner' with: [ spec requires: 'Stamp' ].
+				package: 'TestWorkers-Runner' with: [ spec requires: #('Stamp' 'OSSubprocess') ].
 
 			"Groups"
 			spec
