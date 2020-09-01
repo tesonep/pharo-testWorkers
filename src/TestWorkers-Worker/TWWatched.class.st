@@ -1,6 +1,9 @@
 Class {
 	#name : #TWWatched,
 	#superclass : #TWAbstractConnected,
+	#instVars : [
+		'instanceId'
+	],
 	#category : #'TestWorkers-Worker'
 }
 
@@ -8,7 +11,15 @@ Class {
 TWWatched >> executePing [
 
 	[TWPong new
+		instanceId: instanceId;
 		sendOn: connection] onErrorDo: [  ]
+]
+
+{ #category : #initialization }
+TWWatched >> initialize [
+
+	super initialize.
+	instanceId := UUID new.
 ]
 
 { #category : #configuration }
@@ -31,6 +42,11 @@ TWWatched >> processPriority [
 { #category : #operations }
 TWWatched >> shutdown [
 
-	[TWRunner uniqueInstance stop] 
+	[	
+		TWKilled new 
+			instanceId: instanceId;
+			sendOn: connection.
+		
+		TWRunner uniqueInstance stop] 
 		ensure: [Smalltalk snapshot: false andQuit: true].
 ]

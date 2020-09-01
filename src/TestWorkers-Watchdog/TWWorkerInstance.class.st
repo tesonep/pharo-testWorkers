@@ -3,87 +3,148 @@ Class {
 	#superclass : #Object,
 	#instVars : [
 		'path',
-		'isRunning',
-		'lastPong'
+		'state',
+		'lastPong',
+		'instanceId',
+		'watchdog',
+		'pid'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
 
 { #category : #'instance creation' }
-TWWorkerInstance class >> directory: aPath [ 
+TWWorkerInstance class >> directory: aPath on: aWatchdog [
 
 	^ self basicNew
 		path: aPath;
+		watchdog: aWatchdog;
+		initialize;
 		yourself.
 ]
 
-{ #category : #accessing }
-TWWorkerInstance >> checkAlive [
+{ #category : #'private - operations' }
+TWWorkerInstance >> doStart [
 
-	lastPong ifNil: [ ^ self ].
+	  state := TWStartingInstance on: self.
 
-	(DateAndTime now - lastPong) > 90 seconds 
-		ifTrue: [ isRunning := false. ] 
+	  OSSUnixSubprocess new
+		shellCommand: Smalltalk vm fileName , ' --headless ' , self imageName , ' eval --no-quit "TWRunner uniqueInstance startWatched"';
+		workingDirectory: path fullName;
+		run.
+		
+
+]
+
+{ #category : #'instance control' }
+TWWorkerInstance >> ensureMaterialized [
+
+	state ensureMaterialized
 ]
 
 { #category : #'instance control' }
 TWWorkerInstance >> ensureRunning [
 	
-	self isRunning ifFalse: [ 
-	  OSSUnixSubprocess new
-		shellCommand: Smalltalk vm fileName , ' --headless ' , self imageName , ' eval --no-quit "TWRunner uniqueInstance startWatched"';
-		workingDirectory: path fullName;
-		run.
-		lastPong := DateAndTime now.
-		isRunning := true.
-	].
-	
-
+	state ensureRunning
 ]
 
-{ #category : #accessing }
-TWWorkerInstance >> id [
-	
-	^ path basename asInteger
+{ #category : #'instance control' }
+TWWorkerInstance >> heartbeat [
+	state heartbeat
 ]
 
 { #category : #accessing }
 TWWorkerInstance >> imageName [
 	
-	^ 'worker.image'
+	^ 'worker.image' 
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> imagePath [
+	
+	^ path / self imageName 
 ]
 
 { #category : #accessing }
 TWWorkerInstance >> initialize [ 
 
 	super initialize.
-	lastPong := DateAndTime now.
+	
+	state := TWNonExistingInstance on: self.
+	state checkState.
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> instanceId: anUUID [ 
+	instanceId := anUUID
 ]
 
 { #category : #accessing }
 TWWorkerInstance >> isRunning [
 	
-	^ isRunning ifNil: [ isRunning := false ]
+	^ state isRunning
+]
+
+{ #category : #'private - operations' }
+TWWorkerInstance >> materialize [
+	
+	path ensureCreateDirectory.
+	watchdog templatePath copyAllTo: path.
+	
+	state checkState.
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> isRunning: aFalse [ 
-	isRunning := aFalse
-]
-
-{ #category : #accesssing }
 TWWorkerInstance >> path [
 
 	^ path
 ]
 
-{ #category : #accesssing }
+{ #category : #accessing }
 TWWorkerInstance >> path: aDiskDirectoryEntry [ 
 	path := aDiskDirectoryEntry
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> pongReceived [
+TWWorkerInstance >> pid: anInteger [
 
-	lastPong := DateAndTime now
+	pid := anInteger
+]
+
+{ #category : #'instance control' }
+TWWorkerInstance >> pongReceived: aTWPong [
+
+	state pongReceived: aTWPong
+]
+
+{ #category : #'instance control' }
+TWWorkerInstance >> printOn: aStream [
+
+	aStream 
+		print: self class name;
+		space;
+		nextPut: $(;
+		print: instanceId;
+		space;
+		nextPutAll: path basename;
+		space;
+		print: state;
+		nextPut: $).
+		
+]
+
+{ #category : #'instance control' }
+TWWorkerInstance >> start [
+
+	self ensureRunning
+]
+
+{ #category : #'private - accessing' }
+TWWorkerInstance >> state: aNewState [
+
+	state := aNewState
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> watchdog: aTWWatchdog [ 
+	watchdog := aTWWatchdog
 ]

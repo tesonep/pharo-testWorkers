@@ -1,5 +1,5 @@
 Class {
-	#name : #TWPong,
+	#name : #TWKilled,
 	#superclass : #TWMessage,
 	#instVars : [
 		'instanceId',
@@ -10,42 +10,44 @@ Class {
 }
 
 { #category : #sending }
-TWPong >> execute: client [
-
-	client receivePong: self
-]
-
-{ #category : #sending }
-TWPong >> initialize [
+TWKilled >> initialize [
 	
 	super initialize.
 	path := FileLocator workingDirectory resolve fullName
 ]
 
 { #category : #accessing }
-TWPong >> instanceId [
+TWKilled >> instanceId [
 	^ instanceId
 ]
 
 { #category : #accessing }
-TWPong >> instanceId: anObject [
+TWKilled >> instanceId: anObject [
 	instanceId := anObject
 ]
 
 { #category : #accessing }
-TWPong >> path [ 
-
+TWKilled >> path [
 	^ path
 ]
 
 { #category : #accessing }
-TWPong >> pid [
-	
+TWKilled >> path: anObject [
+	path := anObject
+]
+
+{ #category : #accessing }
+TWKilled >> pid [
 	^ pid
 ]
 
+{ #category : #accessing }
+TWKilled >> pid: anObject [
+	pid := anObject
+]
+
 { #category : #sending }
-TWPong >> queueName [
+TWKilled >> queueName [
 
 	^ 'watchdog'
 ]
