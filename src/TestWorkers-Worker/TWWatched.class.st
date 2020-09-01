@@ -27,3 +27,10 @@ TWWatched >> processPriority [
 
 	^ Processor userInterruptPriority 
 ]
+
+{ #category : #operations }
+TWWatched >> shutdown [
+
+	TWRunner uniqueInstance stop.
+	Smalltalk snapshot: false andQuit: true.
+]

@@ -9,3 +9,9 @@ TWKill >> execute: aClient [
 
 	aClient shutdown.
 ]
+
+{ #category : #sending }
+TWKill >> queueName [
+
+	^ '/exchange/workers'
+]
