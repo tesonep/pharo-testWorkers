@@ -157,7 +157,7 @@ TWWatchdog >> installWorker [
 		arguments: { '--headless'. 'worker.image'. 'eval'. '--save'. 'Metacello new
 	baseline: ''TestWorkers'';
 	repository: ''github://tesonep/pharo-testWorkers'';
-	load: ''runner''' };
+	load: ''worker''' };
 		workingDirectory: templatePath fullName;
 		runAndWaitOnExitDo: [ :process | 
 			process isSuccess ifFalse: [ 1halt. ]]		
@@ -238,9 +238,14 @@ TWWatchdog >> start [
 
 { #category : #operations }
 TWWatchdog >> stop [ 
+
+	TWKill new sendOn: connection.
 	
 	super stop.
-	pingService ifNotNil: [ pingService stop ].
+	pingService 
+		ifNotNil: [ pingService stop ].
+		
+
 ]
 
 { #category : #initialization }

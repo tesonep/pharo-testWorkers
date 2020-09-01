@@ -59,6 +59,13 @@ TWRunner >> runTestMessage: aTWMessage [
 ]
 
 { #category : #operations }
+TWRunner >> shutdown [
+
+	self stop.
+	Smalltalk snapshot: false andQuit: true.
+]
+
+{ #category : #operations }
 TWRunner >> startWatched [
 
 	self start.
