@@ -74,6 +74,12 @@ TWWorkerInstance >> initialize [
 ]
 
 { #category : #accessing }
+TWWorkerInstance >> instanceId [ 
+
+	^ instanceId 
+]
+
+{ #category : #accessing }
 TWWorkerInstance >> instanceId: anUUID [ 
 	instanceId := anUUID
 ]
@@ -82,6 +88,12 @@ TWWorkerInstance >> instanceId: anUUID [
 TWWorkerInstance >> isRunning [
 	
 	^ state isRunning
+]
+
+{ #category : #operations }
+TWWorkerInstance >> killed: aTWKilled [ 
+	
+	state killed: aTWKilled
 ]
 
 { #category : #'private - operations' }
@@ -138,10 +150,24 @@ TWWorkerInstance >> start [
 	self ensureRunning
 ]
 
+{ #category : #accessing }
+TWWorkerInstance >> state [
+	^ state
+]
+
 { #category : #'private - accessing' }
 TWWorkerInstance >> state: aNewState [
 
 	state := aNewState
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> timeSinceLastPong [
+
+	lastPong := state lastPong.
+	lastPong ifNil: [ ^ nil ].
+	
+	^ DateAndTime now - state lastPong
 ]
 
 { #category : #accessing }

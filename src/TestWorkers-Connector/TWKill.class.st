@@ -1,6 +1,6 @@
 Class {
 	#name : #TWKill,
-	#superclass : #TWMessage,
+	#superclass : #TWWatchdogMessage,
 	#category : #'TestWorkers-Connector'
 }
 
@@ -13,5 +13,5 @@ TWKill >> execute: aClient [
 { #category : #sending }
 TWKill >> queueName [
 
-	^ '/exchange/workers'
+	^ self workerExchange
 ]

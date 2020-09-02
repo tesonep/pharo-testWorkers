@@ -1,6 +1,6 @@
 Class {
 	#name : #TWPing,
-	#superclass : #TWMessage,
+	#superclass : #TWWatchdogMessage,
 	#category : #'TestWorkers-Connector'
 }
 
@@ -13,5 +13,5 @@ TWPing >> execute: client [
 { #category : #sending }
 TWPing >> queueName [
 
-	^ '/exchange/workers'
+	^ self workerExchange
 ]

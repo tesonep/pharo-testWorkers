@@ -49,6 +49,18 @@ TWWorkerInstanceState >> instance: anObject [
 ]
 
 { #category : #operations }
+TWWorkerInstanceState >> killed: aTWKilled [ 
+	
+	" nothing to do"
+]
+
+{ #category : #operations }
+TWWorkerInstanceState >> lastPong [
+
+	^ nil
+]
+
+{ #category : #operations }
 TWWorkerInstanceState >> pongReceived: aTWPong [ 
 
 	" I do nothing "

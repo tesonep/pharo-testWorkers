@@ -1,6 +1,6 @@
 Class {
 	#name : #TWPong,
-	#superclass : #TWMessage,
+	#superclass : #TWWatchdogMessage,
 	#instVars : [
 		'instanceId',
 		'path',
@@ -47,5 +47,5 @@ TWPong >> pid [
 { #category : #sending }
 TWPong >> queueName [
 
-	^ 'watchdog'
+	^ self watchdogQueue
 ]

@@ -5,10 +5,33 @@ Class {
 		'rootDirectory',
 		'instances',
 		'pingService',
-		'creationStrategy'
+		'creationStrategy',
+		'onChangeBlock'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
+
+{ #category : #'as yet unclassified' }
+TWWatchdog class >> openExample [
+
+	<script>
+
+	| watchdog |
+	watchdog := self new
+		            rootDirectory:
+			            '/Users/admin/dev/Pharo/lifeware/secondPass/workers/runners'
+				            asFileReference;
+		            useCreationStrategy: TWLatestPharoCreationStrategy;
+		            numberOfInstances: 8;
+		            yourself.
+
+	watchdog start.
+
+	(TWWatchdogPresenter on: watchdog) 
+		openWithSpec.
+		
+	^ watchdog
+]
 
 { #category : #'private-instances-control' }
 TWWatchdog >> createInstance: anId [ 
@@ -18,6 +41,54 @@ TWWatchdog >> createInstance: anId [
 	directory := rootDirectory / anId asString.
 	directory ensureCreateDirectory.
 	self templatePath copyAllTo: directory.
+]
+
+{ #category : #private }
+TWWatchdog >> ensureExchangeOn: server [
+
+	server exchanges 
+		detect: [ :anExchange | anExchange name = TWWatchdogMessage workerExchangeName ]
+		ifFound: [ ^ self ]
+		ifNone: [ 
+			| newExchange |
+			
+			newExchange := RQExchange new.
+			newExchange 
+				server: server;
+				vhost: '/';
+				name: 	TWWatchdogMessage workerExchangeName;
+				type: 'fanout';
+				save ].
+]
+
+{ #category : #private }
+TWWatchdog >> ensureQueueOn: server [
+	
+	server queues 
+		detect: [ :aQueue | aQueue name = TWWatchdogMessage watchdogQueue ]
+		ifFound: [ ^ self ]
+		ifNone: [ 
+			| newQueue |
+			
+			newQueue := RQQueue new.
+			newQueue 
+				server: server;
+				vhost: '/';
+				name: 	TWWatchdogMessage watchdogQueue;
+				save ].
+]
+
+{ #category : #private }
+TWWatchdog >> ensureQueues [
+
+	| server |
+
+	server := RQServer new
+		host: self serverHost;
+		yourself.
+		
+	self ensureExchangeOn: server.
+	self ensureQueueOn: server.	
 ]
 
 { #category : #'private-instances-control' }
@@ -39,9 +110,6 @@ TWWatchdog >> initialize [
 
 	super initialize.
 	instances := OrderedCollection new.
-	creationStrategy := TWLatestPharoCreationStrategy new
-		watchdog: self;
-		yourself.
 
 ]
 
@@ -54,6 +122,12 @@ TWWatchdog >> inputQueueName [
 { #category : #accessing }
 TWWatchdog >> instances [
 	^ instances
+]
+
+{ #category : #operations }
+TWWatchdog >> killed: aTWKilled [ 
+	
+	instances do: [ :anInstance | anInstance killed: aTWKilled ]
 ]
 
 { #category : #'private-instances-control' }
@@ -78,6 +152,12 @@ TWWatchdog >> numberOfInstances: anInteger [
 				directory: self rootDirectory / anIndex asString
 				on: self ] 
 		as: OrderedCollection
+]
+
+{ #category : #events }
+TWWatchdog >> onChange: aBlock [
+
+	onChangeBlock := aBlock
 ]
 
 { #category : #configuration }
@@ -107,13 +187,17 @@ TWWatchdog >> sendPing [
 	
 	TWPing new
 		sendOn: connection.
-		
+	
 	instances do: [:e | e heartbeat ].
+	
+	onChangeBlock ifNotNil: onChangeBlock
 ]
 
 { #category : #operations }
 TWWatchdog >> start [
 
+	self ensureQueues.
+	
 	super start.
 	
 	pingService := TKTParameterizableService new.
@@ -121,19 +205,37 @@ TWWatchdog >> start [
 	pingService stepDelay: 1 second.
 	pingService step: [ self sendPing ].
 	pingService start.
-	
+
+]
+
+{ #category : #operations }
+TWWatchdog >> startInstances [
+
+	self ensureTemplate.
 	self launchInstances 
 ]
 
 { #category : #operations }
 TWWatchdog >> stop [ 
 
-	TWKill new sendOn: connection.
+	self stopInstances.
+	
+	5 seconds wait.
 
 	pingService 
 		ifNotNil: [ pingService stop ].
 	
 	super stop.
+	
+		
+
+]
+
+{ #category : #operations }
+TWWatchdog >> stopInstances [
+
+	TWKill new sendOn: connection.
+
 	
 		
 
@@ -149,4 +251,12 @@ TWWatchdog >> templateName [
 TWWatchdog >> templatePath [ 
 
 	^ rootDirectory / 'template'
+]
+
+{ #category : #initialization }
+TWWatchdog >> useCreationStrategy: aClass [
+
+	creationStrategy := aClass new
+		                    watchdog: self;
+		                    yourself
 ]

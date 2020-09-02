@@ -6,6 +6,9 @@ Class {
 
 { #category : #operations }
 TWStartingInstance >> pongReceived: aTWPong [ 
+			
+	aTWPong path = instance path fullName
+		ifFalse: [ ^ self ].
 	
 	instance instanceId: aTWPong instanceId.
 	instance pid: aTWPong pid.

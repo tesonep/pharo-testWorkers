@@ -1,6 +1,6 @@
 Class {
 	#name : #TWKilled,
-	#superclass : #TWMessage,
+	#superclass : #TWWatchdogMessage,
 	#instVars : [
 		'instanceId',
 		'path',
@@ -8,6 +8,12 @@ Class {
 	],
 	#category : #'TestWorkers-Connector'
 }
+
+{ #category : #sending }
+TWKilled >> execute: aTWWatchdog [ 
+	
+	aTWWatchdog killed: self
+]
 
 { #category : #sending }
 TWKilled >> initialize [
@@ -49,5 +55,5 @@ TWKilled >> pid: anObject [
 { #category : #sending }
 TWKilled >> queueName [
 
-	^ 'watchdog'
+	^ self watchdogQueue
 ]
