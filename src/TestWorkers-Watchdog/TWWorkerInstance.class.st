@@ -7,7 +7,8 @@ Class {
 		'lastPong',
 		'instanceId',
 		'watchdog',
-		'pid'
+		'pid',
+		'host'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -50,6 +51,16 @@ TWWorkerInstance >> ensureRunning [
 { #category : #'instance control' }
 TWWorkerInstance >> heartbeat [
 	state heartbeat
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> host [
+	^ host
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> host: anObject [
+	host := anObject
 ]
 
 { #category : #accessing }

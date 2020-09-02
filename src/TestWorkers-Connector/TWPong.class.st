@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'instanceId',
 		'path',
-		'pid'
+		'pid',
+		'host'
 	],
 	#category : #'TestWorkers-Connector'
 }
@@ -15,11 +16,23 @@ TWPong >> execute: client [
 	client receivePong: self
 ]
 
+{ #category : #accessing }
+TWPong >> host [
+	^ host
+]
+
+{ #category : #accessing }
+TWPong >> host: anObject [
+	host := anObject
+]
+
 { #category : #sending }
 TWPong >> initialize [
 	
 	super initialize.
-	path := FileLocator workingDirectory resolve fullName
+	
+	path := FileLocator workingDirectory resolve fullName.
+	host := NetNameResolver localHostName
 ]
 
 { #category : #accessing }
