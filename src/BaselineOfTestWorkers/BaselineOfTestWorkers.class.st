@@ -22,12 +22,16 @@ BaselineOfTestWorkers >> baseline: spec [
 				baseline: 'OSSubprocess' 
 				with: [ spec repository: 'github://pharo-contributions/OSSubprocess' ].
 
+			"Other Packages"
+			spec
+				package: 'RabbitMQ-Rest'.
+
 			"Packages"
 			spec
 				package: 'TestWorkers-Changes';
 				package: 'TestWorkers-Connector' with: [ spec requires: #('Stamp') ];
 				package: 'TestWorkers-Watchdog' 
-					with: [ spec requires: #('OSSubprocess' 'TestWorkers-Connector') ];
+					with: [ spec requires: #('OSSubprocess' 'TestWorkers-Connector' 'RabbitMQ-Rest') ];
 				package: 'TestWorkers-Worker' with: [ spec requires: #('TestWorkers-Connector') ];
 				package: 'TestWorkers-Client' with: [ spec requires: #('TestWorkers-Connector') ];
 				package: 'TestWorkers-UI' with: [ spec requires: #('TestWorkers-Client') ];
