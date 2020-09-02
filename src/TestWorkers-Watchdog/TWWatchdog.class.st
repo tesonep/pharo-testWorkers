@@ -62,23 +62,6 @@ TWWatchdog >> ensureExchangeOn: server [
 ]
 
 { #category : #private }
-TWWatchdog >> ensureQueueOn: server [
-	
-	server queues 
-		detect: [ :aQueue | aQueue name = TWWatchdogMessage watchdogQueue ]
-		ifFound: [ ^ self ]
-		ifNone: [ 
-			| newQueue |
-			
-			newQueue := RQQueue new.
-			newQueue 
-				server: server;
-				vhost: '/';
-				name: 	TWWatchdogMessage watchdogQueue;
-				save ].
-]
-
-{ #category : #private }
 TWWatchdog >> ensureQueues [
 
 	| server |
@@ -88,7 +71,7 @@ TWWatchdog >> ensureQueues [
 		yourself.
 		
 	self ensureExchangeOn: server.
-	self ensureQueueOn: server.	
+
 ]
 
 { #category : #'private-instances-control' }
