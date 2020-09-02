@@ -8,7 +8,7 @@ Class {
 TWNonExistingInstance >> checkState [
 	
 	"If the path exists and the image exists I change to materialized state."
-	
+	1halt.
 	(instance path exists and: [ instance imagePath exists ])
 		ifTrue: [ instance state: (TWMaterializedInstance on: instance) ]
 	
@@ -30,5 +30,5 @@ TWNonExistingInstance >> ensureRunning [
 { #category : #accessing }
 TWNonExistingInstance >> stateName [
 
-	^ 'Materialized'
+	^ 'Not Materialized'
 ]

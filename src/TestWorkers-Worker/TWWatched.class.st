@@ -25,7 +25,7 @@ TWWatched >> initialize [
 { #category : #configuration }
 TWWatched >> inputQueueName [ 
 
-	^ '/exchange/workers'
+	^ TWWatchdogMessage workerExchange 
 ]
 
 { #category : #configuration }

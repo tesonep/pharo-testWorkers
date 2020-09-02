@@ -116,7 +116,7 @@ TWWatchdog >> initialize [
 { #category : #configuration }
 TWWatchdog >> inputQueueName [ 
 
-	^ 'watchdog'
+	^ TWWatchdogMessage watchdogQueue
 ]
 
 { #category : #accessing }
