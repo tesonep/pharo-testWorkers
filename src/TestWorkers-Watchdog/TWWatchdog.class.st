@@ -68,6 +68,8 @@ TWWatchdog >> ensureQueues [
 
 	server := RQServer new
 		host: self serverHost;
+		username: self username;
+		password: self password;
 		yourself.
 		
 	self ensureExchangeOn: server.

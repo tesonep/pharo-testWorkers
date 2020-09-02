@@ -22,6 +22,8 @@ TWAbstractConnected >> doConnect [
 		
 	connection host: self serverHost.
 	connection port: self serverPort.
+	connection login: self username.
+	connection passcode: self password.
 
 	connection timeout: 5.
 	connection open.
@@ -56,6 +58,12 @@ TWAbstractConnected >> initialize [
 TWAbstractConnected >> inputQueueName [ 
 
 	^ self subclassResponsibility 
+]
+
+{ #category : #configuration }
+TWAbstractConnected >> password [
+
+	^ 'pablo'
 ]
 
 { #category : #processing }
@@ -102,7 +110,7 @@ TWAbstractConnected >> processRequest [
 { #category : #configuration }
 TWAbstractConnected >> serverHost [
 
-	^ 'localhost'
+	^ '10.201.6.28'
 ]
 
 { #category : #configuration }
@@ -135,4 +143,10 @@ TWAbstractConnected >> stop [
 		"I am closing it" ].
 	
 	listenerProcess ifNotNil: [ listenerProcess terminate ].
+]
+
+{ #category : #configuration }
+TWAbstractConnected >> username [
+
+	^ 'pablo'
 ]
