@@ -51,7 +51,8 @@ TWWatchdogPresenter >> initializeWindow: aWindow [
 
 	super initializeWindow: aWindow.
 
-	aWindow extent: 800@500
+	aWindow extent: 800@500.
+	aWindow announcer when: SpWindowWillClose send: #stop to: self.
 ]
 
 { #category : #initialization }
@@ -63,6 +64,13 @@ TWWatchdogPresenter >> modelChanged [
 	instanceTable selectItem: originalSelection.
 
 	self watchdog onChange: [ self updatePresenter ]
+]
+
+{ #category : #initialization }
+TWWatchdogPresenter >> stop [ 
+
+	SpNotification dispatchInfoTo: self application message: 'Watchdog stopped'. 
+	self watchdog stop
 ]
 
 { #category : #accessing }

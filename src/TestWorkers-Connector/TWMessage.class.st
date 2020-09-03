@@ -7,6 +7,13 @@ Class {
 	#category : #'TestWorkers-Connector'
 }
 
+{ #category : #private }
+TWMessage >> addAdditionalHeaders: frame [
+
+	frame headerAt: 'uuid' put: uuid
+
+]
+
 { #category : #sending }
 TWMessage >> execute: client [
 
@@ -38,11 +45,11 @@ TWMessage >> sendOn: connection [
 
 	| frame |
 
-	[(frame := connection newSendFrameTo: self queueName)
-		bytes: self serializedData;
-		headerAt: 'uuid' put: uuid. 
+	[	(frame := connection newSendFrameTo: self queueName)
+			bytes: self serializedData.
 		
-	connection write: frame] onErrorDo: [ :e | self handleSendError: e on: connection ].
+		self addAdditionalHeaders: frame.
+		connection write: frame] onErrorDo: [ :e | self handleSendError: e on: connection ].
 	
 ]
 

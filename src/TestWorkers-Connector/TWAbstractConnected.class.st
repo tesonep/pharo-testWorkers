@@ -71,7 +71,9 @@ TWAbstractConnected >> processMessage: aStampMessageFrame [
 
 	| message |
 	
-	[  message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
+	[  
+		message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
+		message messageFrame: aStampMessageFrame.
 		message execute: self.
 		connection write: aStampMessageFrame ackFrame 
 	]	onErrorDo: [:e | | nackFrame |

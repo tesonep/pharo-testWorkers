@@ -55,16 +55,31 @@ TWConfigureWatchdogPresenter class >> defaultStrategyClass [
 	^ defaultStrategyClass ifNil: [ defaultStrategyClass := TWCurrentPharoCommitCreationStrategy ]
 ]
 
+{ #category : #'world menu' }
+TWConfigureWatchdogPresenter class >> menuCommandOn: aBuilder [
+
+	<worldMenu>
+	(aBuilder item: #'Start Worker Instances')
+		parent: #Tools;
+		action: [ self new openWithSpec ];
+		order: 18;
+		help: 'Let you start a new watchdog and a set of Worker instances';
+		icon: self taskbarIcon.
+
+]
+
 { #category : #initialization }
 TWConfigureWatchdogPresenter >> connectPresenters [
 
-"	rootDirectoryInput."
+	rootDirectoryInput text: self class defaultRootDirectory fullName.
 	creationStrategyDropList items: TWCreationStrategy allSubclasses.
 	creationStrategyDropList selectItem: self class defaultStrategyClass.
 	
 	nbrInstancesInput minimum: 1.
 	nbrInstancesInput number: self class defaultInstanceSize.
-"	startButton"
+	
+	startButton label: 'Start Watchdog'.
+	startButton action: [ self start ]
 ]
 
 { #category : #initialization }
@@ -81,4 +96,24 @@ TWConfigureWatchdogPresenter >> initializeWindow: aWindow [
 
 	aWindow initialExtent: 500@200.
 	aWindow title: 'Start Instances and Watchdog'
+]
+
+{ #category : #actions }
+TWConfigureWatchdogPresenter >> start [
+	
+	| watchdog |
+	
+	watchdog := TWWatchdog new
+		rootDirectory: rootDirectoryInput text asFileReference;
+		useCreationStrategy: creationStrategyDropList selectedItem;
+		numberOfInstances: nbrInstancesInput number;
+		yourself.
+		
+	watchdog start.
+	
+	(TWWatchdogPresenter on: watchdog)
+		openWithSpec.
+		
+	self window close.
+
 ]

@@ -10,6 +10,13 @@ Class {
 	#category : #'TestWorkers-Connector'
 }
 
+{ #category : #private }
+TWPong >> addAdditionalHeaders: frame [
+
+	super addAdditionalHeaders: frame.
+	frame headerAt: 'reply-to' put: '/temp-queue/worker-instance'
+]
+
 { #category : #sending }
 TWPong >> execute: client [
 

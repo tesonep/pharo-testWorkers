@@ -11,6 +11,14 @@ TWMaterializedInstance >> ensureRunning [
 ]
 
 { #category : #operations }
+TWMaterializedInstance >> heartbeat [ 
+
+	(instance path exists and: [ instance imagePath exists ])
+			ifFalse: [ 	instance state: (TWNonExistingInstance on: instance).
+							instance state checkState. ]
+]
+
+{ #category : #operations }
 TWMaterializedInstance >> pongReceived: aTWPong [ 
 			
 	aTWPong path = instance path fullName

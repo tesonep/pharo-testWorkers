@@ -203,7 +203,7 @@ TWWatchdog >> startInstances [
 { #category : #operations }
 TWWatchdog >> stop [ 
 
-	self stopInstances.
+	[self stopInstances] onErrorDo: [].
 	
 	5 seconds wait.
 

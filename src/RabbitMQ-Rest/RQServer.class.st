@@ -11,10 +11,25 @@ Class {
 }
 
 { #category : #api }
+RQServer >> connections [
+
+	^ self from: '/api/connections' as: RQConnection
+
+]
+
+{ #category : #api }
 RQServer >> exchanges [
 
-	^ (self newRequest get: '/api/exchanges') 
-			collect: [ :aDictionary | RQExchange fromDictionary: aDictionary and: self ]
+	^ self from: '/api/exchanges' as: RQExchange
+]
+
+{ #category : #private }
+RQServer >> from: aPath as: anEntityClass [
+	
+	^ (self newRequest get: aPath) 
+			collect: [ :aDictionary | anEntityClass fromDictionary: aDictionary and: self ].
+			
+
 ]
 
 { #category : #accessing }
@@ -71,8 +86,8 @@ RQServer >> port: anObject [
 { #category : #api }
 RQServer >> queues [
 
-	^ (self newRequest get: '/api/queues') 
-			collect: [ :aDictionary | RQQueue fromDictionary: aDictionary and: self ]
+	^ self from: '/api/queues' as: RQQueue
+
 ]
 
 { #category : #accessing }
