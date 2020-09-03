@@ -13,6 +13,7 @@ TWStartingInstance >> pongReceived: aTWPong [
 	instance instanceId: aTWPong instanceId.
 	instance pid: aTWPong pid.
 	instance host: aTWPong host.
+	instance directQueue: aTWPong replyQueue.
 	
 	instance state: (TWRunningInstance on: instance).
 ]

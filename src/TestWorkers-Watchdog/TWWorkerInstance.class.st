@@ -8,7 +8,8 @@ Class {
 		'instanceId',
 		'watchdog',
 		'pid',
-		'host'
+		'host',
+		'directQueue'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -21,6 +22,16 @@ TWWorkerInstance class >> directory: aPath on: aWatchdog [
 		watchdog: aWatchdog;
 		initialize;
 		yourself.
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> directQueue [
+	^ directQueue
+]
+
+{ #category : #accessing }
+TWWorkerInstance >> directQueue: anObject [
+	directQueue := anObject
 ]
 
 { #category : #'private - operations' }

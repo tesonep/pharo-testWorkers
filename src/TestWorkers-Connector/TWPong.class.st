@@ -21,6 +21,7 @@ TWPong >> addAdditionalHeaders: frame [
 TWPong >> execute: client [
 
 	client receivePong: self.
+
 ]
 
 { #category : #accessing }
@@ -68,4 +69,10 @@ TWPong >> pid [
 TWPong >> queueName [
 
 	^ self watchdogQueue
+]
+
+{ #category : #sending }
+TWPong >> replyQueue [
+
+	^ messageFrame headerAt: 'reply-to'
 ]

@@ -22,6 +22,27 @@ TWWatchdogPresenter class >> defaultSpec [
 ]
 
 { #category : #initialization }
+TWWatchdogPresenter >> contextMenu [
+
+	| hasSelection |
+
+	hasSelection := instanceTable selection selectedItem notNil.
+
+	^ SpMenuPresenter new 
+		addGroup: [ :group | group 
+			addItem: [ :item | item 
+				name: 'Stop Instance';
+				icon: (self iconNamed: #delete);
+				enabled: hasSelection;
+				action: [ self stopSelectedInstance ] ];
+			addItem: [ :item | item 
+				name: 'Start Instance';
+				icon: (self iconNamed: #smallDoIt);
+				enabled: hasSelection;
+				action: [ self startSelectedInstance ] ] ].
+]
+
+{ #category : #initialization }
 TWWatchdogPresenter >> initializePresenters [ 
 
 	instanceTable := self newTable.
@@ -32,7 +53,8 @@ TWWatchdogPresenter >> initializePresenters [
 		addColumn: (SpStringTableColumn title: 'Host' evaluated: #host);
 		addColumn: (SpStringTableColumn title: 'State' evaluated: [:e | e state stateName]);
 		addColumn: (SpStringTableColumn title: 'Last Pong' evaluated: [:e | 
-			e timeSinceLastPong ifNotNil: [ :aDuration | (aDuration roundTo: 1 second) humanReadablePrintString ]]);		
+			e timeSinceLastPong ifNotNil: [ :aDuration | (aDuration roundTo: 1 second) humanReadablePrintString ]]);
+		contextMenu: [ self contextMenu ];
 		beResizable.
 
 	startInstancesButton := self newButton
@@ -66,11 +88,23 @@ TWWatchdogPresenter >> modelChanged [
 	self watchdog onChange: [ self updatePresenter ]
 ]
 
+{ #category : #actions }
+TWWatchdogPresenter >> startSelectedInstance [
+	
+	self watchdog startInstance: instanceTable selectedItem.
+]
+
 { #category : #initialization }
 TWWatchdogPresenter >> stop [ 
 
 	SpNotification dispatchInfoTo: self application message: 'Watchdog stopped'. 
 	self watchdog stop
+]
+
+{ #category : #actions }
+TWWatchdogPresenter >> stopSelectedInstance [
+	
+	self watchdog stopInstance: instanceTable selectedItem.
 ]
 
 { #category : #accessing }

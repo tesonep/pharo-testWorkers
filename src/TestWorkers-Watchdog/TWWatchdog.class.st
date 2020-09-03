@@ -194,6 +194,13 @@ TWWatchdog >> start [
 ]
 
 { #category : #operations }
+TWWatchdog >> startInstance: aTWWorkerInstance [ 
+
+	self ensureTemplate.
+	aTWWorkerInstance ensureRunning	
+]
+
+{ #category : #operations }
 TWWatchdog >> startInstances [
 
 	self ensureTemplate.
@@ -214,6 +221,12 @@ TWWatchdog >> stop [
 	
 		
 
+]
+
+{ #category : #operations }
+TWWatchdog >> stopInstance: aWorkerInstance [
+
+	TWKill new sendOn: connection to: aWorkerInstance directQueue
 ]
 
 { #category : #operations }

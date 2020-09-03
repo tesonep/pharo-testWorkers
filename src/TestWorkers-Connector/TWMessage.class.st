@@ -50,9 +50,15 @@ TWMessage >> queueName [
 { #category : #sending }
 TWMessage >> sendOn: connection [
 
+	^ self sendOn: connection to: self queueName
+]
+
+{ #category : #sending }
+TWMessage >> sendOn: connection to: aQueueName [
+
 	| frame |
 
-	[	(frame := connection newSendFrameTo: self queueName)
+	[	(frame := connection newSendFrameTo: aQueueName)
 			bytes: self serializedData.
 		
 		self addAdditionalHeaders: frame.
