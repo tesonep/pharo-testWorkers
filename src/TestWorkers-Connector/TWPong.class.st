@@ -20,7 +20,7 @@ TWPong >> addAdditionalHeaders: frame [
 { #category : #sending }
 TWPong >> execute: client [
 
-	client receivePong: self
+	client receivePong: self.
 ]
 
 { #category : #accessing }

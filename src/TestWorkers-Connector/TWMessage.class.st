@@ -2,7 +2,8 @@ Class {
 	#name : #TWMessage,
 	#superclass : #Object,
 	#instVars : [
-		'uuid'
+		'uuid',
+		'messageFrame'
 	],
 	#category : #'TestWorkers-Connector'
 }
@@ -31,6 +32,12 @@ TWMessage >> initialize [
 	
 	super initialize.
 	uuid := UUID new asString
+]
+
+{ #category : #accessing }
+TWMessage >> messageFrame: aFrame [
+
+	messageFrame := aFrame
 ]
 
 { #category : #sending }
