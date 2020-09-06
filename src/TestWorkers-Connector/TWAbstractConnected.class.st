@@ -6,8 +6,43 @@ Class {
 		'subscription',
 		'listenerProcess'
 	],
+	#classInstVars : [
+		'serverHost',
+		'username',
+		'password'
+	],
 	#category : #'TestWorkers-Connector'
 }
+
+{ #category : #accessing }
+TWAbstractConnected class >> password [
+	^ password ifNil: [ 'guest' ]
+]
+
+{ #category : #accessing }
+TWAbstractConnected class >> password: anObject [
+	password := anObject
+]
+
+{ #category : #accessing }
+TWAbstractConnected class >> serverHost [
+	^ serverHost ifNil: [ '127.0.0.1' ]
+]
+
+{ #category : #accessing }
+TWAbstractConnected class >> serverHost: anObject [
+	serverHost := anObject
+]
+
+{ #category : #accessing }
+TWAbstractConnected class >> username [
+	^ username ifNil: [ 'guest' ]
+]
+
+{ #category : #accessing }
+TWAbstractConnected class >> username: anObject [
+	username := anObject
+]
 
 { #category : #accessing }
 TWAbstractConnected >> connection [
@@ -63,7 +98,7 @@ TWAbstractConnected >> inputQueueName [
 { #category : #configuration }
 TWAbstractConnected >> password [
 
-	^ 'pablo'
+	^ self class password
 ]
 
 { #category : #processing }
@@ -112,7 +147,7 @@ TWAbstractConnected >> processRequest [
 { #category : #configuration }
 TWAbstractConnected >> serverHost [
 
-	^ '10.201.6.28'
+	^ self class serverHost
 ]
 
 { #category : #configuration }
@@ -150,5 +185,5 @@ TWAbstractConnected >> stop [
 { #category : #configuration }
 TWAbstractConnected >> username [
 
-	^ 'pablo'
+	^ self class username
 ]

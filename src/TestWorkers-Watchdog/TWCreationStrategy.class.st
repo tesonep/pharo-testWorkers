@@ -7,6 +7,12 @@ Class {
 	#category : #'TestWorkers-Watchdog'
 }
 
+{ #category : #accessing }
+TWCreationStrategy class >> description [
+
+	^ self subclassResponsibility 
+]
+
 { #category : #initialization }
 TWCreationStrategy >> createTemplate [ 
 
