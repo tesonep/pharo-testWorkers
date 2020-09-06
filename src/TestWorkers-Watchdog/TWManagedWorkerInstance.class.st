@@ -1,5 +1,5 @@
 Class {
-	#name : #TWWorkerInstance,
+	#name : #TWManagedWorkerInstance,
 	#superclass : #Object,
 	#instVars : [
 		'path',
@@ -15,7 +15,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-TWWorkerInstance class >> directory: aPath on: aWatchdog [
+TWManagedWorkerInstance class >> directory: aPath on: aWatchdog [
 
 	^ self basicNew
 		path: aPath;
@@ -25,17 +25,17 @@ TWWorkerInstance class >> directory: aPath on: aWatchdog [
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> directQueue [
+TWManagedWorkerInstance >> directQueue [
 	^ directQueue
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> directQueue: anObject [
+TWManagedWorkerInstance >> directQueue: anObject [
 	directQueue := anObject
 ]
 
 { #category : #'private - operations' }
-TWWorkerInstance >> doStart [
+TWManagedWorkerInstance >> doStart [
 
 	  state := TWStartingInstance on: self.
 
@@ -48,46 +48,46 @@ TWWorkerInstance >> doStart [
 ]
 
 { #category : #'instance control' }
-TWWorkerInstance >> ensureMaterialized [
+TWManagedWorkerInstance >> ensureMaterialized [
 
 	state ensureMaterialized
 ]
 
 { #category : #'instance control' }
-TWWorkerInstance >> ensureRunning [
+TWManagedWorkerInstance >> ensureRunning [
 	
 	state ensureRunning
 ]
 
 { #category : #'instance control' }
-TWWorkerInstance >> heartbeat [
+TWManagedWorkerInstance >> heartbeat [
 	state heartbeat
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> host [
+TWManagedWorkerInstance >> host [
 	^ host
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> host: anObject [
+TWManagedWorkerInstance >> host: anObject [
 	host := anObject
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> imageName [
+TWManagedWorkerInstance >> imageName [
 	
 	^ 'worker.image' 
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> imagePath [
+TWManagedWorkerInstance >> imagePath [
 	
 	^ path / self imageName 
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> initialize [ 
+TWManagedWorkerInstance >> initialize [ 
 
 	super initialize.
 	
@@ -96,30 +96,30 @@ TWWorkerInstance >> initialize [
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> instanceId [ 
+TWManagedWorkerInstance >> instanceId [ 
 
 	^ instanceId 
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> instanceId: anUUID [ 
+TWManagedWorkerInstance >> instanceId: anUUID [ 
 	instanceId := anUUID
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> isRunning [
+TWManagedWorkerInstance >> isRunning [
 	
 	^ state isRunning
 ]
 
 { #category : #operations }
-TWWorkerInstance >> killed: aTWKilled [ 
+TWManagedWorkerInstance >> killed: aTWKilled [ 
 	
 	state killed: aTWKilled
 ]
 
 { #category : #'private - operations' }
-TWWorkerInstance >> materialize [
+TWManagedWorkerInstance >> materialize [
 	
 	path ensureCreateDirectory.
 	watchdog templatePath copyAllTo: path.
@@ -128,30 +128,30 @@ TWWorkerInstance >> materialize [
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> path [
+TWManagedWorkerInstance >> path [
 
 	^ path
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> path: aDiskDirectoryEntry [ 
+TWManagedWorkerInstance >> path: aDiskDirectoryEntry [ 
 	path := aDiskDirectoryEntry
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> pid: anInteger [
+TWManagedWorkerInstance >> pid: anInteger [
 
 	pid := anInteger
 ]
 
 { #category : #'instance control' }
-TWWorkerInstance >> pongReceived: aTWPong [
+TWManagedWorkerInstance >> pongReceived: aTWPong [
 
 	state pongReceived: aTWPong
 ]
 
 { #category : #'instance control' }
-TWWorkerInstance >> printOn: aStream [
+TWManagedWorkerInstance >> printOn: aStream [
 
 	aStream 
 		print: self class name;
@@ -167,24 +167,24 @@ TWWorkerInstance >> printOn: aStream [
 ]
 
 { #category : #'instance control' }
-TWWorkerInstance >> start [
+TWManagedWorkerInstance >> start [
 
 	self ensureRunning
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> state [
+TWManagedWorkerInstance >> state [
 	^ state
 ]
 
 { #category : #'private - accessing' }
-TWWorkerInstance >> state: aNewState [
+TWManagedWorkerInstance >> state: aNewState [
 
 	state := aNewState
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> timeSinceLastPong [
+TWManagedWorkerInstance >> timeSinceLastPong [
 
 	lastPong := state lastPong.
 	lastPong ifNil: [ ^ nil ].
@@ -193,6 +193,6 @@ TWWorkerInstance >> timeSinceLastPong [
 ]
 
 { #category : #accessing }
-TWWorkerInstance >> watchdog: aTWWatchdog [ 
+TWManagedWorkerInstance >> watchdog: aTWWatchdog [ 
 	watchdog := aTWWatchdog
 ]

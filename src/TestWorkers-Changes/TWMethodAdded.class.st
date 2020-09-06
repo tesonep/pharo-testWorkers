@@ -1,9 +1,6 @@
 Class {
 	#name : #TWMethodAdded,
-	#superclass : #TWAbstractChange,
-	#instVars : [
-		'protocol'
-	],
+	#superclass : #TWAbstractMethodModification,
 	#category : #'TestWorkers-Changes-Changes'
 }
 
@@ -14,15 +11,4 @@ TWMethodAdded >> fromAnnouncement: aMethodAdded [
 	definition := aMethodAdded methodAdded sourceCode.
 	protocol := aMethodAdded methodAdded protocol.
 
-]
-
-{ #category : #accessing }
-TWMethodAdded >> protocol [
-	^ protocol
-]
-
-{ #category : #accessing }
-TWMethodAdded >> sourceCode [
-
-	^ definition
 ]

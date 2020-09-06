@@ -25,6 +25,18 @@ TWChangeCollector >> classRemoved: aClassRemoved [
 	repository currentCommit addChange: (TWClassRemoved fromAnnouncement: aClassRemoved)	
 ]
 
+{ #category : #changes }
+TWChangeCollector >> classRenamed: aClassRenamed [ 
+
+	
+]
+
+{ #category : #changes }
+TWChangeCollector >> classReorganized: aClassReorganized [ 
+
+	
+]
+
 { #category : #'system-registration' }
 TWChangeCollector >> ensureRegistered [
 
@@ -73,6 +85,13 @@ TWChangeCollector >> methodRecategorized: aMethodRecategorized [
 	
 	repository currentCommit
 		addChange: (TWMethodModified new fromRecategorization: aMethodRecategorized; yourself)
+]
+
+{ #category : #modifications }
+TWChangeCollector >> methodRemoved: aMethodRemoved [ 
+	
+	repository currentCommit
+		addChange: (TWMethodRemoved fromAnnouncement: aMethodRemoved)
 ]
 
 { #category : #accessing }

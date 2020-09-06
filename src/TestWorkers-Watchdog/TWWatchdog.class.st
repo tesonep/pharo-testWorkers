@@ -133,7 +133,7 @@ TWWatchdog >> numberOfInstances: anInteger [
 
 	instances := (1 to: anInteger) 
 		collect: [ :anIndex | 
-			TWWorkerInstance 
+			TWManagedWorkerInstance 
 				directory: self rootDirectory / anIndex asString
 				on: self ] 
 		as: OrderedCollection

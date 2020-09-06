@@ -1,52 +1,8 @@
 Class {
 	#name : #TWCollectChangesInMemoryCommitTest,
-	#superclass : #TWRepositoryTest,
-	#instVars : [
-		'existingClass'
-	],
+	#superclass : #TWChangesTest,
 	#category : #'TestWorkers-Changes-Tests'
 }
-
-{ #category : #asserting }
-TWCollectChangesInMemoryCommitTest >> assertCommitHasChangeOf: aClassName [
-	self
-		assert:
-			(repository currentCommit changes
-				anySatisfy: [ :aChange | aChange className = aClassName ])
-		description: 'Expecting to find a change for ' , aClassName
-]
-
-{ #category : #utils }
-TWCollectChangesInMemoryCommitTest >> changes [
-
-	^ repository currentCommit changes
-]
-
-{ #category : #utils }
-TWCollectChangesInMemoryCommitTest >> findChangeOf: aName [.
-
-	^ self changes detect: [ :aChange | aChange className = aName ].
-]
-
-{ #category : #utils }
-TWCollectChangesInMemoryCommitTest >> initialClassSetup [ 
-
-	existingClass := self newClass: #TWExistingClass.
-	existingClass compile: 'existingMethod ^ 31'
-]
-
-{ #category : #running }
-TWCollectChangesInMemoryCommitTest >> setUp [ 
-
-	super setUp.
-
-	self initialClassSetup.
-	
-	"Creates the initial commit"
-	repository createInitialCommit.
-	"Starting a transaction to be in a Memory Commit"
-	repository startTransaction 
-]
 
 { #category : #'tests - adding' }
 TWCollectChangesInMemoryCommitTest >> testAddingAMethodIncludesProtocol [
@@ -191,7 +147,7 @@ TWCollectChangesInMemoryCommitTest >> testChangingTheProtocolOfAMethodHasTheOldP
 	existingClass compile: 'existingMethod ^ 31' classified: 'a-protocol' notifying: nil.
 
 	change := self findChangeOf: #TWExistingClass.
-	self assert: change oldProtocol equals: #'as yet unclassified'
+	self assert: change oldProtocol equals: #'a-protocol'
 ]
 
 { #category : #'tests - adding' }
@@ -228,6 +184,39 @@ TWCollectChangesInMemoryCommitTest >> testRemovingAClassProducesAChangeForTheCla
 
 	self assertCommitHasChangeOf: #TWExistingClass.
 
+]
+
+{ #category : #'tests - removing' }
+TWCollectChangesInMemoryCommitTest >> testRemovingAMethodHasTheOldSource [
+
+	| change |
+
+	existingClass removeSelector: #existingMethod.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change definition equals: 'existingMethod ^ 31'	
+]
+
+{ #category : #'tests - removing' }
+TWCollectChangesInMemoryCommitTest >> testRemovingAMethodHasTheProtocol [
+
+	<expectedFailure>
+
+	"This test is failing as the change reported by the user already lost the old protocol"
+
+	| change |
+
+	existingClass removeSelector: #existingMethod.
+
+	change := self findChangeOf: #TWExistingClass.
+	self assert: change protocol equals: 'a-protocol'
+]
+
+{ #category : #'tests - removing' }
+TWCollectChangesInMemoryCommitTest >> testRemovingAMethodProduceAChangeForTheClass [
+
+	existingClass removeSelector: #existingMethod.
+	self assertCommitHasChangeOf: #TWExistingClass. 
 ]
 
 { #category : #tests }

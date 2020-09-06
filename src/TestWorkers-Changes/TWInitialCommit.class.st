@@ -14,6 +14,11 @@ TWInitialCommit >> canStartTransaction [
 ]
 
 { #category : #accessing }
+TWInitialCommit >> changes [
+	^ #()
+]
+
+{ #category : #accessing }
 TWInitialCommit >> imageVersion [
 	
 	^ imageVersion

@@ -1,6 +1,6 @@
 Class {
 	#name : #TWMaterializedInstance,
-	#superclass : #TWWorkerInstanceState,
+	#superclass : #TWManagedWorkerInstanceState,
 	#category : #'TestWorkers-Watchdog'
 }
 

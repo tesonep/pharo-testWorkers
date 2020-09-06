@@ -15,6 +15,15 @@ TWWatched >> executePing [
 		sendOn: connection] onErrorDo: [  ]
 ]
 
+{ #category : #'as yet unclassified' }
+TWWatched >> informationRequested: aTWInfoRequest [
+
+	[ 
+	TWInfoResponse new
+		instanceId: instanceId;
+		sendOn: connection to: aTWInfoRequest replyQueue] onErrorDo: [  ]
+]
+
 { #category : #initialization }
 TWWatched >> initialize [
 

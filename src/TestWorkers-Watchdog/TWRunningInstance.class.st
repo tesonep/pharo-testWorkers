@@ -1,6 +1,6 @@
 Class {
 	#name : #TWRunningInstance,
-	#superclass : #TWWorkerInstanceState,
+	#superclass : #TWManagedWorkerInstanceState,
 	#instVars : [
 		'lastPong'
 	],

@@ -1,5 +1,5 @@
 Class {
-	#name : #TWWorkerInstanceState,
+	#name : #TWManagedWorkerInstanceState,
 	#superclass : #Object,
 	#instVars : [
 		'instance'
@@ -8,7 +8,7 @@ Class {
 }
 
 { #category : #'instance creation' }
-TWWorkerInstanceState class >> on: anInstance [
+TWManagedWorkerInstanceState class >> on: anInstance [
 
 	^ self new
 		instance: anInstance;
@@ -16,64 +16,64 @@ TWWorkerInstanceState class >> on: anInstance [
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> checkState [
+TWManagedWorkerInstanceState >> checkState [
 
 	"By default empty"
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> ensureMaterialized [
+TWManagedWorkerInstanceState >> ensureMaterialized [
 	
 	" I do nothing by default"
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> ensureRunning [
+TWManagedWorkerInstanceState >> ensureRunning [
 	
 	" I do nothing "
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> heartbeat [
+TWManagedWorkerInstanceState >> heartbeat [
 	" nothing to do"
 ]
 
 { #category : #accessing }
-TWWorkerInstanceState >> instance [
+TWManagedWorkerInstanceState >> instance [
 	^ instance
 ]
 
 { #category : #accessing }
-TWWorkerInstanceState >> instance: anObject [
+TWManagedWorkerInstanceState >> instance: anObject [
 	instance := anObject
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> killed: aTWKilled [ 
+TWManagedWorkerInstanceState >> killed: aTWKilled [ 
 	
 	" nothing to do"
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> lastPong [
+TWManagedWorkerInstanceState >> lastPong [
 
 	^ nil
 ]
 
 { #category : #operations }
-TWWorkerInstanceState >> pongReceived: aTWPong [ 
+TWManagedWorkerInstanceState >> pongReceived: aTWPong [ 
 
 	" I do nothing "
 ]
 
 { #category : #printing }
-TWWorkerInstanceState >> printOn: anStream [
+TWManagedWorkerInstanceState >> printOn: anStream [
 
 	anStream nextPutAll: self stateName
 ]
 
 { #category : #accessing }
-TWWorkerInstanceState >> stateName [
+TWManagedWorkerInstanceState >> stateName [
 
 	^ self subclassResponsibility
 ]

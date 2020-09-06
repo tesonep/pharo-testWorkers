@@ -33,7 +33,7 @@ TWCopyImageCreationStrategy >> downloadAndUnzip [
 	zipFile := self templatePath / self originalImageZip basename.
 	
 	zipFile exists 
-		ifFalse: [ self originalImageZip copyTo: self templatePath ] . 
+		ifFalse: [ self originalImageZip copyTo: zipFile  ] . 
 	
 	zipArchive := ZipArchive new readFrom: zipFile.
 	

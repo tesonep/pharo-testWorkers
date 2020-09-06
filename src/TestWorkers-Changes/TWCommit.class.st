@@ -9,6 +9,15 @@ Class {
 	#category : #'TestWorkers-Changes-Commits'
 }
 
+{ #category : #changes }
+TWCommit >> allChanges [
+
+	| parentChanges |
+	
+	parentChanges := parentCommit ifNil: [ #() ] ifNotNil: [ parentCommit allChanges ].
+	^ parentChanges , self changes
+]
+
 { #category : #accessing }
 TWCommit >> commitId [
 	

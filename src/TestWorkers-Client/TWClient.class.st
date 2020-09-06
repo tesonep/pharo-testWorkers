@@ -5,7 +5,8 @@ Class {
 		'requests',
 		'testResult',
 		'onUpdateBlock',
-		'executionErrors'
+		'executionErrors',
+		'repository'
 	],
 	#classVars : [
 		'UniqueInstance'
@@ -16,6 +17,7 @@ Class {
 { #category : #'instance creation' }
 TWClient class >> reset [
 	
+	UniqueInstance ifNotNil: [ UniqueInstance stop ].
 	UniqueInstance := nil
 ]
 
@@ -32,6 +34,8 @@ TWClient >> initialize [
 	requests := Dictionary new.
 	testResult := TestResult new.
 	executionErrors := OrderedCollection new.
+	repository := TWRepository new.
+	repository createInitialCommit.
 ]
 
 { #category : #configuration }
@@ -50,6 +54,11 @@ TWClient >> onUpdate: aValuable [
 TWClient >> processName [ 
 
 	^ 'TWClient'
+]
+
+{ #category : #accessing }
+TWClient >> repository [
+	^ repository
 ]
 
 { #category : #accessing }
@@ -98,6 +107,12 @@ TWClient >> runTestResponse: aTWTestResponse [
 	testResult mergeWith: aTWTestResponse testResults.
 	
 	onUpdateBlock ifNotNil: [ UIManager default defer: onUpdateBlock ]
+]
+
+{ #category : #changes }
+TWClient >> sendChanges [
+	
+	repository currentCommit
 ]
 
 { #category : #accessing }

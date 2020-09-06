@@ -1,10 +1,9 @@
 Class {
 	#name : #TWMethodModified,
-	#superclass : #TWAbstractChange,
+	#superclass : #TWAbstractMethodModification,
 	#instVars : [
 		'oldDefinition',
-		'oldProtocol',
-		'protocol'
+		'oldProtocol'
 	],
 	#category : #'TestWorkers-Changes-Changes'
 }
@@ -50,11 +49,6 @@ TWMethodModified >> oldDefinition [
 { #category : #accessing }
 TWMethodModified >> oldProtocol [
 	^ oldProtocol
-]
-
-{ #category : #accessing }
-TWMethodModified >> protocol [
-	^ protocol
 ]
 
 { #category : #accessing }
