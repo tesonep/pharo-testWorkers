@@ -8,6 +8,24 @@ Class {
 	#category : #'TestWorkers-Connector'
 }
 
+{ #category : #'as yet unclassified' }
+TWMessage class >> watchdogQueue [ 
+
+	^ 'watchdog-' , NetNameResolver localHostName
+]
+
+{ #category : #'as yet unclassified' }
+TWMessage class >> workerExchange [ 
+
+	^ '/exchange/' , self workerExchangeName
+]
+
+{ #category : #'as yet unclassified' }
+TWMessage class >> workerExchangeName [
+
+	^ 'workers-' , NetNameResolver localHostName
+]
+
 { #category : #private }
 TWMessage >> addAdditionalHeaders: frame [
 
@@ -81,4 +99,16 @@ TWMessage >> uuid [
 { #category : #accessing }
 TWMessage >> uuid: anObject [
 	uuid := anObject
+]
+
+{ #category : #'as yet unclassified' }
+TWMessage >> watchdogQueue [ 
+
+	^ self class watchdogQueue
+]
+
+{ #category : #'as yet unclassified' }
+TWMessage >> workerExchange [ 
+
+	^ self class workerExchange 
 ]

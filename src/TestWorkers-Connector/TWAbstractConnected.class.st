@@ -110,7 +110,9 @@ TWAbstractConnected >> processMessage: aStampMessageFrame [
 		message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
 		message messageFrame: aStampMessageFrame.
 		message execute: self.
-		connection write: aStampMessageFrame ackFrame 
+		((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
+			ifFalse: [ 
+				connection write: aStampMessageFrame ackFrame ]. 
 	]	onErrorDo: [:e | | nackFrame |
 			nackFrame := aStampMessageFrame nackFrame.
 			connection write: nackFrame.

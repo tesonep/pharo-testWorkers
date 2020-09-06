@@ -6,7 +6,8 @@ Class {
 		'testResult',
 		'onUpdateBlock',
 		'executionErrors',
-		'repository'
+		'repository',
+		'workerInstances'
 	],
 	#classVars : [
 		'UniqueInstance'
@@ -27,6 +28,13 @@ TWClient class >> uniqueInstance [
 	^ UniqueInstance ifNil: [ UniqueInstance := self new ]
 ]
 
+{ #category : #information }
+TWClient >> informationArrived: aTWInfoResponse [ 
+	
+	aTWInfoResponse traceCr.
+	workerInstances at: aTWInfoResponse instanceId put: aTWInfoResponse.
+]
+
 { #category : #initialization }
 TWClient >> initialize [
 
@@ -36,6 +44,7 @@ TWClient >> initialize [
 	executionErrors := OrderedCollection new.
 	repository := TWRepository new.
 	repository createInitialCommit.
+	workerInstances := Dictionary new.
 ]
 
 { #category : #configuration }
@@ -61,6 +70,12 @@ TWClient >> repository [
 	^ repository
 ]
 
+{ #category : #operations }
+TWClient >> requestInstanceInfo [
+
+	[TWRequestInfo new sendOn: connection] onErrorDo: [  ]
+]
+
 { #category : #accessing }
 TWClient >> requests [
 	^ requests
@@ -82,18 +97,19 @@ TWClient >> runTestClass: aTestCase [
 	
 	request := TWTestRequest new
 		testClassName: aTestCase name;
-		sendOn: connection;
 		yourself.
 		
-	requests at: request uuid put: request.
+	requests at: request uuid asString put: request.
 		
+	request sendOn: connection
+
 	
 ]
 
 { #category : #operations }
 TWClient >> runTestExecutionError: aTWTestExecutionError [
 
-	requests removeKey: aTWTestExecutionError uuid ifAbsent: [ ^ self ].
+	requests removeKey: aTWTestExecutionError uuid asString ifAbsent: [ ^ self ].
 	
 	executionErrors add: aTWTestExecutionError.
 	
@@ -103,7 +119,9 @@ TWClient >> runTestExecutionError: aTWTestExecutionError [
 { #category : #operations }
 TWClient >> runTestResponse: aTWTestResponse [
 
-	requests removeKey: aTWTestResponse uuid ifAbsent: [ ^ self ].
+	requests removeKey: aTWTestResponse uuid asString 
+		ifAbsent: [ ^ self ].
+	
 	testResult mergeWith: aTWTestResponse testResults.
 	
 	onUpdateBlock ifNotNil: [ UIManager default defer: onUpdateBlock ]

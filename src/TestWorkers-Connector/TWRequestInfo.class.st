@@ -8,7 +8,7 @@ Class {
 TWRequestInfo >> addAdditionalHeaders: frame [
 
 	super addAdditionalHeaders: frame.
-	frame headerAt: 'reply-to' put: '/temp-queue/client'
+	frame headerAt: 'reply-to' put: '/temp-queue/client-queue'
 ]
 
 { #category : #sending }
@@ -20,7 +20,7 @@ TWRequestInfo >> execute: client [
 { #category : #sending }
 TWRequestInfo >> queueName [
 
-	^ 'worker-' , NetNameResolver localHostName
+	^ self workerExchange
 	
 ]
 
