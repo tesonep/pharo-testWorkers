@@ -9,6 +9,7 @@ BaselineOfTestWorkers >> baseline: spec [
 
 	<baseline>
 
+	| subprocess |
 	spec
 		for: #common
 		do: [ 
@@ -18,9 +19,17 @@ BaselineOfTestWorkers >> baseline: spec [
 				baseline: 'Stamp' 
 				with: [ spec repository: 'github://tesonep/stamp' ].
 
-			spec 
-				baseline: 'OSSubprocess' 
-				with: [ spec repository: 'github://pharo-contributions/OSSubprocess' ].
+			Smalltalk platform isWindows 
+				ifTrue: [
+					spec
+						baseline: 'OSWinSubprocess' 
+						with: [ spec repository: 'github://pharo-contributions/OSWinSubprocess' ].
+					subprocess := 'OSWinSubprocess' ] 
+				ifFalse: [			
+					spec 
+						baseline: 'OSSubprocess' 
+						with: [ spec repository: 'github://pharo-contributions/OSSubprocess' ].
+					subprocess := 'OSSubprocess'].
 
 			"Other Packages"
 			spec
@@ -31,7 +40,7 @@ BaselineOfTestWorkers >> baseline: spec [
 				package: 'TestWorkers-Changes';
 				package: 'TestWorkers-Connector' with: [ spec requires: #('Stamp') ];
 				package: 'TestWorkers-Watchdog' 
-					with: [ spec requires: #('OSSubprocess' 'TestWorkers-Connector' 'RabbitMQ-Rest') ];
+					with: [ spec requires: { subprocess. 'TestWorkers-Connector'. 'RabbitMQ-Rest' } ];
 				package: 'TestWorkers-Worker' with: [ spec requires: #('TestWorkers-Connector') ];
 				package: 'TestWorkers-Client' with: [ spec requires: #('TestWorkers-Connector') ];
 				package: 'TestWorkers-UI' with: [ spec requires: #('TestWorkers-Client') ];
