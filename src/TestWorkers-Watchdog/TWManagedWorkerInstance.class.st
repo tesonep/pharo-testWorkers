@@ -37,14 +37,24 @@ TWManagedWorkerInstance >> directQueue: anObject [
 { #category : #'private - operations' }
 TWManagedWorkerInstance >> doStart [
 
-	  state := TWStartingInstance on: self.
+	| startScript |
+	state := TWStartingInstance on: self.
 
-	  OSSUnixSubprocess new
-		shellCommand: Smalltalk vm fileName , ' --headless ' , self imageName , ' eval --no-quit "TWRunner uniqueInstance startWatched"';
-		workingDirectory: path fullName;
-		run.
-		
+	startScript := '
+			TWAbstractConnected 
+				serverHost: ''{1}'';
+				username: ''{2}'';
+				password: ''{3}''.
+			TWRunner uniqueInstance startWatched.' format: { 
+			               TWAbstractConnected serverHost.
+			               TWAbstractConnected username.
+			               TWAbstractConnected password }.
 
+	TWSubprocessWrapper
+		runWithoutWaitingShellCommand:
+			Smalltalk vm fileName , ' --headless ' , self imageName
+			, ' eval --no-quit "' , startScript , '"'
+		workingDirectory: path fullName
 ]
 
 { #category : #'instance control' }

@@ -6,42 +6,42 @@ Class {
 		'subscription',
 		'listenerProcess'
 	],
-	#classInstVars : [
-		'serverHost',
-		'username',
-		'password'
+	#classVars : [
+		'Password',
+		'ServerHost',
+		'Username'
 	],
 	#category : #'TestWorkers-Connector'
 }
 
 { #category : #accessing }
 TWAbstractConnected class >> password [
-	^ password ifNil: [ 'guest' ]
+	^ Password ifNil: [ 'guest' ]
 ]
 
 { #category : #accessing }
 TWAbstractConnected class >> password: anObject [
-	password := anObject
+	Password := anObject
 ]
 
 { #category : #accessing }
 TWAbstractConnected class >> serverHost [
-	^ serverHost ifNil: [ '127.0.0.1' ]
+	^ ServerHost ifNil: [ '127.0.0.1' ]
 ]
 
 { #category : #accessing }
 TWAbstractConnected class >> serverHost: anObject [
-	serverHost := anObject
+	ServerHost := anObject
 ]
 
 { #category : #accessing }
 TWAbstractConnected class >> username [
-	^ username ifNil: [ 'guest' ]
+	^ Username ifNil: [ 'guest' ]
 ]
 
 { #category : #accessing }
 TWAbstractConnected class >> username: anObject [
-	username := anObject
+	Username := anObject
 ]
 
 { #category : #accessing }

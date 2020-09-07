@@ -62,6 +62,7 @@ TWConfigureWatchdogPresenter class >> defaultStrategyClass [
 TWConfigureWatchdogPresenter class >> menuCommandOn: aBuilder [
 
 	<worldMenu>
+	
 	(aBuilder item: #'Start Worker Instances')
 		parent: #Tools;
 		action: [ self new openWithSpec ];

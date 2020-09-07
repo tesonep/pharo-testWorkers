@@ -104,7 +104,7 @@ TWWatchdogPresenter >> stop [
 { #category : #actions }
 TWWatchdogPresenter >> stopSelectedInstance [
 	
-	self watchdog stopInstance: instanceTable selectedItem.
+	self watchdog stopInstance: instanceTable selection selectedItem.
 ]
 
 { #category : #accessing }

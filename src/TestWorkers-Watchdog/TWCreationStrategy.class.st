@@ -72,23 +72,18 @@ TWCreationStrategy >> installWorker [
 	
 	downloadedImageName := possibleImages first basename.
 
-	OSSUnixSubprocess new
-		command: Smalltalk vm fileName;
-		arguments: { '--headless'. downloadedImageName. 'save'. 'worker' };
-		workingDirectory: self templatePath fullName;
-		runAndWaitOnExitDo: [ :process | 
-			process isSuccess ifFalse: [ 1halt. ]].
+	TWSubprocessWrapper 
+		runCommand: Smalltalk vm fileName
+		arguments: { '--headless'. downloadedImageName. 'save'. 'worker' }
+		workingDirectory: self templatePath fullName.
 
-	OSSUnixSubprocess new
-		command: Smalltalk vm fileName;
+	TWSubprocessWrapper 
+		runCommand: Smalltalk vm fileName
 		arguments: { '--headless'. 'worker.image'. 'eval'. '--save'. 'Metacello new
 	baseline: ''TestWorkers'';
 	repository: ''github://tesonep/pharo-testWorkers'';
-	load: ''worker''' };
-		workingDirectory: self templatePath fullName;
-		runAndWaitOnExitDo: [ :process | 
-			process isSuccess ifFalse: [ 1halt. ]]		
-	
+	load: ''worker''' }
+		workingDirectory: self templatePath fullName.
 ]
 
 { #category : #accessing }
