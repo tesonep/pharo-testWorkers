@@ -7,9 +7,12 @@ Class {
 { #category : #'as yet unclassified' }
 TWWindowsSubprocessWrapper class >> runCommand: command arguments: arguments workingDirectory: workingDirectory [
 
+	| fullCommand |
+	
+	fullCommand := command , ' ' , (arguments joinUsing: ' ').
+
 	((Smalltalk at: #OSWSWinProcess) new
-		command: command;
-		arguments: arguments;
+		shellCommand: fullCommand;
 		workingDirectory: workingDirectory;
 		runAndWait;
 		isSuccess) ifFalse: [ self halt ].
