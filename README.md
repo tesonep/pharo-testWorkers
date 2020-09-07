@@ -15,4 +15,11 @@ This prototype uses RabbitMQ to distribute tests to the different worker instanc
 
 This diagram shows a simplify description of the test distribution.
 
-![Basic Test distribution](./docs/basicArchitecture.png "Basic Test distribution")
+![Basic Test distribution](./docs/images/basicArchitecture.png "Basic Test distribution")
+
+More detailed information of each of the elements of the solution:
+
+- [Test Execution](./docs/testExecution.md)
+- [Queue Architecture](./docs/queues.md)
+- [Watchdog Architecture](./docs/watchdog.md)
+- [Changes Propagation](./docs/changePropagation.md)
