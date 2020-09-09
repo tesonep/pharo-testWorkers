@@ -1,3 +1,13 @@
+"
+I am a DrTestsPlugin. I extend the UI to use the TWClient runner to run the tests.
+Once I am in the system the UI of DrTest will discover me and show me in the possible runners.
+
+The most interesting methods I have are: 
+
+ - `runForConfiguration:` : This method sends the test requests to the unique instance of TWClient and register myself to receive the notifications where the TWClient is updated. The important thing is that I shuffle the tests classes before sending. This improves the response time of the global execution. 
+ 
+ - `updateResults` : This message is sent by the TWClient when a received message has update it. I force the DrTest UI to update. Generating a new result tree and updating the status bar
+"
 Class {
 	#name : #TWRemoteTests,
 	#superclass : #DrTestsPlugin,
@@ -85,7 +95,7 @@ TWRemoteTests >> updateResults [
 	result := TWRemoteTestsResult new.
 	result client: client.
 	
-	client requests size = 0 
+	client requests isEmpty 
 		ifTrue: [ | duration |
 			duration := DateAndTime now - startTime. 
 			drTestUI updateStatus: 'Finished: ' , duration printString ]

@@ -18,13 +18,6 @@ TWRequestInfo >> execute: client [
 ]
 
 { #category : #sending }
-TWRequestInfo >> queueName [
-
-	^ self workerExchange
-	
-]
-
-{ #category : #sending }
 TWRequestInfo >> replyQueue [
 
 	^ messageFrame headerAt: 'reply-to'

@@ -1,3 +1,11 @@
+"
+I represent the Test execution results afte executing tests in the remote infrastructure.
+I have the responsibility of creating the result test from the TWClient instance. 
+I categorize the results of the tests in the same way as the default result tree of DrTest, but I add two categories: 
+
+ - Remaining Tests: Tests that should be still executed in the infra (see `#remainingTestNodes`).
+ - Execution Errors: Tests that could not been executed in the infra (see `#communicationErrorTestNodes`).  
+"
 Class {
 	#name : #TWRemoteTestsResult,
 	#superclass : #DTPluginResult,
@@ -9,6 +17,7 @@ Class {
 
 { #category : #accessing }
 TWRemoteTestsResult >> buildLeavesFrom: aCollection type: testResultType [
+
 	^ aCollection collect: [ :t | DTTestLeaf content: t type: testResultType ]
 ]
 
@@ -21,8 +30,12 @@ TWRemoteTestsResult >> buildTreeForUI [
 			DTTreeNode new
 				name: 'Remaining Tests';
 				subResults: self remainingTestNodes;
-				yourself.			
-DTTreeNode new
+				yourself.	
+			DTTreeNode new
+				name: 'Execution Errors';
+				subResults: self communicationErrorTestNodes;
+				yourself.						
+			DTTreeNode new
 				name: DTTestResultType error pluralName;
 				subResults: (self buildLeavesFrom: client testResults errors asOrderedCollection type: DTTestResultType error);
 				yourself.
@@ -50,6 +63,13 @@ TWRemoteTestsResult >> client: anObject [
 ]
 
 { #category : #nodes }
+TWRemoteTestsResult >> communicationErrorTestNodes [
+
+	^ client executionErrors collect: [ :e | DTTreeLeaf content: e ].
+]
+
+{ #category : #nodes }
 TWRemoteTestsResult >> remainingTestNodes [
+
 	^ client requests values collect: [ :e | DTTreeLeaf content: e ].
 ]

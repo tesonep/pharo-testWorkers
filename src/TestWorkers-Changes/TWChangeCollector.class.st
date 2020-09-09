@@ -13,6 +13,12 @@ TWChangeCollector >> classAdded: aClassAdded [
 	repository currentCommit addChange: (TWClassAdded fromAnnouncement: aClassAdded)
 ]
 
+{ #category : #changes }
+TWChangeCollector >> classCommented: aClassCommented [ 
+	
+	"I am ignoring comments by now"
+]
+
 { #category : #'system-events' }
 TWChangeCollector >> classModified: aClassModified [ 
 	

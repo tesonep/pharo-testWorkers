@@ -28,11 +28,34 @@ TWClient class >> uniqueInstance [
 	^ UniqueInstance ifNil: [ UniqueInstance := self new ]
 ]
 
+{ #category : #initialization }
+TWClient >> executionErrors [
+
+	^ executionErrors 
+]
+
+{ #category : #'getting-info' }
+TWClient >> findWorkerExchanges [
+
+	| server |
+	server := RQServer new
+		          host: self serverHost;
+		          username: self username;
+		          password: self password;
+		          yourself.
+
+
+	^ server exchanges
+		  select: [ :anExchange | anExchange name beginsWith: 'workers' ]
+		  thenCollect: [ :anExchange | '/exchange/' , anExchange name ]
+]
+
 { #category : #information }
-TWClient >> informationArrived: aTWInfoResponse [ 
-	
-	aTWInfoResponse traceCr.
-	workerInstances at: aTWInfoResponse instanceId put: aTWInfoResponse.
+TWClient >> informationArrived: aTWInfoResponse [
+
+	workerInstances
+		at: aTWInfoResponse instanceId
+		put: (TWWorkerInstance for: aTWInfoResponse)
 ]
 
 { #category : #initialization }
@@ -73,7 +96,11 @@ TWClient >> repository [
 { #category : #operations }
 TWClient >> requestInstanceInfo [
 
-	[TWRequestInfo new sendOn: connection] onErrorDo: [  ]
+	| exchanges |
+	
+	exchanges := self findWorkerExchanges.
+	exchanges do: [ :anExchange | [TWRequestInfo new sendOn: connection to: anExchange] onErrorDo: [  ]]
+	
 ]
 
 { #category : #accessing }
