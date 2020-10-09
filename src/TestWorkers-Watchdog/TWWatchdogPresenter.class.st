@@ -74,6 +74,7 @@ TWWatchdogPresenter >> initializeWindow: aWindow [
 	super initializeWindow: aWindow.
 
 	aWindow extent: 800@500.
+	aWindow title: 'Distributed Runner Instances'.
 	aWindow announcer when: SpWindowWillClose send: #stop to: self.
 ]
 
