@@ -87,6 +87,12 @@ TWCreationStrategy >> installWorker [
 ]
 
 { #category : #accessing }
+TWCreationStrategy >> templateName [
+
+	^ 'worker.image'
+]
+
+{ #category : #accessing }
 TWCreationStrategy >> templatePath [ 
 
 	^ watchdog templatePath 

@@ -87,7 +87,7 @@ TWManagedWorkerInstance >> host: anObject [
 { #category : #accessing }
 TWManagedWorkerInstance >> imageName [
 	
-	^ 'worker.image' 
+	^ watchdog templateName
 ]
 
 { #category : #accessing }
@@ -130,11 +130,11 @@ TWManagedWorkerInstance >> killed: aTWKilled [
 
 { #category : #'private - operations' }
 TWManagedWorkerInstance >> materialize [
-	
+
 	path ensureCreateDirectory.
-	watchdog templatePath copyAllTo: path.
+	 watchdog templatePath copyAllTo: path .
 	
-	state checkState.
+	state checkState
 ]
 
 { #category : #accessing }

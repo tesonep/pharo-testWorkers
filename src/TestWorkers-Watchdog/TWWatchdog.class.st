@@ -203,8 +203,8 @@ TWWatchdog >> startInstance: aTWWorkerInstance [
 { #category : #operations }
 TWWatchdog >> startInstances [
 
-	self ensureTemplate.
-	self launchInstances 
+	[self ensureTemplate.
+	self launchInstances ] on: Abort do: [  ]
 ]
 
 { #category : #operations }
@@ -242,7 +242,7 @@ TWWatchdog >> stopInstances [
 { #category : #accessing }
 TWWatchdog >> templateName [ 
 
-	^ 'worker.image'
+	^ creationStrategy templateName
 ]
 
 { #category : #accessing }

@@ -17,7 +17,7 @@ TWWatchdogPresenter class >> defaultSpec [
 			add: (SpBoxLayout newHorizontal
 						add: #startInstancesButton;
 						add: #stopInstancesButton;
-						yourself) withConstraints: [:cs | cs padding: 2; height: 25 ];
+						yourself) withConstraints: [:cs | cs padding: 2; height: 35 ];
 			yourself 
 ]
 
