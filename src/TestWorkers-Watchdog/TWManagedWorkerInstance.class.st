@@ -132,8 +132,9 @@ TWManagedWorkerInstance >> killed: aTWKilled [
 TWManagedWorkerInstance >> materialize [
 
 	path ensureCreateDirectory.
-	 watchdog templatePath copyAllTo: path .
-	
+	path = watchdog templatePath ifFalse: [ 
+		watchdog templatePath copyAllTo: path ].
+
 	state checkState
 ]
 

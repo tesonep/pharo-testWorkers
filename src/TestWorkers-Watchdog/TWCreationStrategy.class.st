@@ -87,6 +87,12 @@ TWCreationStrategy >> installWorker [
 ]
 
 { #category : #accessing }
+TWCreationStrategy >> templateFolderName [
+
+	^ 'template'
+]
+
+{ #category : #accessing }
 TWCreationStrategy >> templateName [
 
 	^ 'worker.image'
