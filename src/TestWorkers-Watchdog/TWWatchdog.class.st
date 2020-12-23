@@ -131,12 +131,14 @@ TWWatchdog >> materializeInstances [
 { #category : #'instances-control' }
 TWWatchdog >> numberOfInstances: anInteger [
 
-	instances := (1 to: anInteger) 
-		collect: [ :anIndex | 
-			TWManagedWorkerInstance 
-				directory: self rootDirectory / anIndex asString
-				on: self ] 
-		as: OrderedCollection
+	instances := (1 to: anInteger)
+		             collect: [ :anIndex | 
+			             TWManagedWorkerInstance
+				             directory: (creationStrategy
+						              instanceDirectorWithRoot: self rootDirectory
+						              andImageIndex: anIndex)
+				             on: self ]
+		             as: OrderedCollection
 ]
 
 { #category : #events }
