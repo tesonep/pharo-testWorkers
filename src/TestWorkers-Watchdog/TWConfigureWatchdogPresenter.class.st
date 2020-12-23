@@ -29,6 +29,12 @@ TWConfigureWatchdogPresenter class >> defaultRootDirectory [
 ]
 
 { #category : #specs }
+TWConfigureWatchdogPresenter class >> defaultRootDirectory: aFileReference [
+
+	defaultRootDirectory := aFileReference
+]
+
+{ #category : #specs }
 TWConfigureWatchdogPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical 

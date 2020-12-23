@@ -248,7 +248,7 @@ TWWatchdog >> templateName [
 { #category : #accessing }
 TWWatchdog >> templatePath [ 
 
-	^ rootDirectory / 'template'
+	^ rootDirectory / creationStrategy templateFolderName
 ]
 
 { #category : #initialization }
