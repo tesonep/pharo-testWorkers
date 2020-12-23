@@ -86,6 +86,12 @@ TWCreationStrategy >> installWorker [
 		workingDirectory: self templatePath fullName.
 ]
 
+{ #category : #'instances-creation' }
+TWCreationStrategy >> instanceDirectorWithRoot: aFileReferenceToRootDirectory andImageIndex: anIndex [
+
+	^ aFileReferenceToRootDirectory / anIndex asString
+]
+
 { #category : #accessing }
 TWCreationStrategy >> templateFolderName [
 
