@@ -10,6 +10,8 @@ TWStartingInstance >> pongReceived: aTWPong [
 	aTWPong path = instance path fullName
 		ifFalse: [ ^ self ].
 	
+	(instance hasAlreadyRegistredToWatchdogWithId: aTWPong instanceId) ifTrue: [  ^self ].
+	
 	instance instanceId: aTWPong instanceId.
 	instance pid: aTWPong pid.
 	instance host: aTWPong host.

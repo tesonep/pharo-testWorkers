@@ -52,9 +52,9 @@ TWManagedWorkerInstance >> doStart [
 
 	TWSubprocessWrapper
 		runWithoutWaitingShellCommand:
-			Smalltalk vm fileName , ' --headless ' , self imageName
+			Smalltalk vm fileName ,' ', "' --headless ' ," self imageName
 			, ' eval --no-quit "' , startScript , '"'
-		workingDirectory: path fullName
+		workingDirectory: path fullName 
 ]
 
 { #category : #'instance control' }
@@ -67,6 +67,12 @@ TWManagedWorkerInstance >> ensureMaterialized [
 TWManagedWorkerInstance >> ensureRunning [
 	
 	state ensureRunning
+]
+
+{ #category : #testing }
+TWManagedWorkerInstance >> hasAlreadyRegistredToWatchdogWithId: anId [
+
+	^ watchdog hasAnInstanceRegistredWithId: anId
 ]
 
 { #category : #'instance control' }

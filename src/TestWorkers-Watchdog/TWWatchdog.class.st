@@ -84,6 +84,12 @@ TWWatchdog >> ensureTemplate [
 ]
 
 { #category : #testing }
+TWWatchdog >> hasAnInstanceRegistredWithId: anId [
+
+	^ instances anySatisfy: [ :instance | instance instanceId = anId ]
+]
+
+{ #category : #testing }
 TWWatchdog >> hasTemplate [
 
 	^ (self templatePath / self templateName ) exists 

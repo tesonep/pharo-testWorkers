@@ -37,6 +37,12 @@ TWWatched >> inputQueueName [
 	^ TWWatchdogMessage workerExchange 
 ]
 
+{ #category : #operations }
+TWWatched >> instanceId [
+
+	^ instanceId
+]
+
 { #category : #configuration }
 TWWatched >> processName [ 
 	^ 'TWWatched'

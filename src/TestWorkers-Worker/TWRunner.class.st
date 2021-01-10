@@ -63,7 +63,7 @@ TWRunner >> startWatched [
 
 	self start.
 	watched := TWWatched new.
-	watched start.
+	watched start
 ]
 
 { #category : #operations }
