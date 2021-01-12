@@ -58,12 +58,21 @@ TWCreateFromMyselfAndNoCopyStrategy >> createTemplate [
 		on: FileExists
 		do: [ :ex | "Ok to proceed" ].
 
+	(SourceFiles changesFileStream isNil or: [ 
+		 SourceFiles changesFileStream closed ]) ifFalse: [ 
+		SmalltalkImage current  closeSourceFiles.
+		SmalltalkImage current  saveChangesInFileNamed:
+			(SmalltalkImage current  fullNameForChangesNamed: self templatePath /  (SmalltalkImage current imageFile base, '-TW')).
+		SmalltalkImage current  openSourceFiles ].
+
 	isBackup := SmalltalkImage current backupImageInFileNamed:
 		            self templatePath / self templateName.
 
 	isBackup
 		ifFalse: [ watchdog start ]
-		ifTrue: [ Abort signal ]
+		ifTrue: [ 
+			TWClient uniqueInstance stop.
+			Abort signal ]
 ]
 
 { #category : #'instances-creation' }

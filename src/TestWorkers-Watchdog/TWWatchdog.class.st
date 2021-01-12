@@ -204,8 +204,8 @@ TWWatchdog >> start [
 { #category : #operations }
 TWWatchdog >> startInstance: aTWWorkerInstance [ 
 
-	self ensureTemplate.
-	aTWWorkerInstance ensureRunning	
+	[self ensureTemplate.
+	aTWWorkerInstance ensureRunning	] on: Abort do: [  ]
 ]
 
 { #category : #operations }

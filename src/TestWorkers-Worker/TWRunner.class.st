@@ -61,6 +61,19 @@ TWRunner >> runTestMessage: aTWMessage [
 { #category : #operations }
 TWRunner >> startWatched [
 
+	| oldChanges uuid oldChangesRef newChanges |
+	uuid := UUID new asString.
+	Smalltalk logFileName: 'PharoDebug' , uuid , '.log'.
+	oldChanges := SourceFiles changesFileStream.
+	oldChanges close.
+	oldChangesRef := oldChanges path asFileReference.
+	newChanges := oldChangesRef parent / oldChangesRef basenameWithoutExtension , uuid
+	        , '.changes'.
+	oldChangesRef copyTo: newChanges.
+	oldChanges
+		path: newChanges pathString;
+		tryOpen.
+		
 	self start.
 	watched := TWWatched new.
 	watched start
