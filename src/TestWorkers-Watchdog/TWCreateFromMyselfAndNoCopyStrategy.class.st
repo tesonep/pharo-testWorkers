@@ -12,11 +12,10 @@ TWCreateFromMyselfAndNoCopyStrategy class >> description [
 
 { #category : #'As yet unclassified' }
 TWCreateFromMyselfAndNoCopyStrategy class >> scriptToRunTheTests [
-"	| watchdog |
-	watchdog := TWWatchdog new
+"		watchdog := TWWatchdog new
 		rootDirectory: 'C:\pharo9_64' asFileReference;
-		useCreationStrategy: TWCreateImageFromMyselfStrategy ;
-		numberOfInstances: 2;
+		useCreationStrategy: TWCreateFromMyselfAndNoCopyStrategy ;
+		numberOfInstances: 15;
 		yourself.
 		
 	watchdog start.
@@ -24,25 +23,24 @@ TWCreateFromMyselfAndNoCopyStrategy class >> scriptToRunTheTests [
 	(TWWatchdogPresenter on: watchdog)
 		openWithSpec.
 	watchdog	startInstances.
-		
-	package := 'Accounts Testing' asPackage.
+	""EXEC in 2 steps ---- STOP THERE""
+	
+	packages := RPackageOrganizer default packages.
 	conf := DTPluginConfiguration
 		items:
-			((Array with: package)
+			(packages
 				flatCollect:
 					[ :p | p definedClasses select: [ :c | c allSuperclasses includes: LwTestCase ] ])
-		packages:(Array with: package).
-	plugin := TWRemoteTests.
+		packages:packages.
+	plugin := TWRemoteTestsPluginForLifeware. 
 	drTest := DrTests on:(Array with: plugin).
+	drTest currentPlugin finishCallbackBlock: [ :e | |stream| stream := 'testResults.json' asXFilename writeStreamX. [  stream nextPutAll: drTest pluginResult client testResults jsonized ]ensure: [ stream close ]. Transcript open; show: 'TESTS FINISHED' ].
 	drTest openWithSpec.
-	(drTest runPluginFor: conf) 
-	drTest pluginResult buildTreeForUI.
+	(drTest runPluginFor: conf).
 	
-
-
-
-
-watchdog stop"
+	
+	watchdog stop
+"
 
 ]
 
