@@ -49,9 +49,9 @@ TWWatched >> processName [
 ]
 
 { #category : #configuration }
-TWWatched >> processPriority [ 
+TWWatched >> processPriority [
 
-	^ Processor userInterruptPriority 
+	^ Processor highIOPriority
 ]
 
 { #category : #operations }
