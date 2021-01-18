@@ -1,8 +1,6 @@
 Class {
 	#name : #TWRemoteTestsPluginForLifeware,
 	#superclass : #TWRemoteTests,
-	#traits : 'TLifeware',
-	#classTraits : 'TLifeware classTrait',
 	#instVars : [
 		'finishCallbackBlock'
 	],
