@@ -59,7 +59,7 @@ TWRunner >> runTestMessage: aTWMessage [
 		          do: [ :anError | 
 			          TWTestExecutionError new
 				          testClassName: aTWMessage testClassName;
-				          exceptionMessage: anError messageText;
+				          exceptionMessage: anError class name printString , anError messageText printString;
 				          serializedException: nil;
 				          uuid: aTWMessage uuid;
 				          yourself ].
