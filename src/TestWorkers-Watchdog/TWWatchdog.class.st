@@ -84,6 +84,12 @@ TWWatchdog >> ensureTemplate [
 ]
 
 { #category : #testing }
+TWWatchdog >> hasAnInstanceRegistredWithId: anId [
+
+	^ instances anySatisfy: [ :instance | instance instanceId = anId ]
+]
+
+{ #category : #testing }
 TWWatchdog >> hasTemplate [
 
 	^ (self templatePath / self templateName ) exists 
@@ -131,12 +137,14 @@ TWWatchdog >> materializeInstances [
 { #category : #'instances-control' }
 TWWatchdog >> numberOfInstances: anInteger [
 
-	instances := (1 to: anInteger) 
-		collect: [ :anIndex | 
-			TWManagedWorkerInstance 
-				directory: self rootDirectory / anIndex asString
-				on: self ] 
-		as: OrderedCollection
+	instances := (1 to: anInteger)
+		             collect: [ :anIndex | 
+			             TWManagedWorkerInstance
+				             directory: (creationStrategy
+						              instanceDirectorWithRoot: self rootDirectory
+						              andImageIndex: anIndex)
+				             on: self ]
+		             as: OrderedCollection
 ]
 
 { #category : #events }
@@ -196,15 +204,15 @@ TWWatchdog >> start [
 { #category : #operations }
 TWWatchdog >> startInstance: aTWWorkerInstance [ 
 
-	self ensureTemplate.
-	aTWWorkerInstance ensureRunning	
+	[self ensureTemplate.
+	aTWWorkerInstance ensureRunning	] on: Abort do: [  ]
 ]
 
 { #category : #operations }
 TWWatchdog >> startInstances [
 
-	self ensureTemplate.
-	self launchInstances 
+	[self ensureTemplate.
+	self launchInstances ] on: Abort do: [  ]
 ]
 
 { #category : #operations }
@@ -242,13 +250,13 @@ TWWatchdog >> stopInstances [
 { #category : #accessing }
 TWWatchdog >> templateName [ 
 
-	^ 'worker.image'
+	^ creationStrategy templateName
 ]
 
 { #category : #accessing }
 TWWatchdog >> templatePath [ 
 
-	^ rootDirectory / 'template'
+	^ rootDirectory / creationStrategy templateFolderName
 ]
 
 { #category : #initialization }

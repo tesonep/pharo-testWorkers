@@ -52,9 +52,9 @@ TWManagedWorkerInstance >> doStart [
 
 	TWSubprocessWrapper
 		runWithoutWaitingShellCommand:
-			Smalltalk vm fileName , ' --headless ' , self imageName
-			, ' eval --no-quit "' , startScript , '"'
-		workingDirectory: path fullName
+			Smalltalk vm fileName ,' ', ' --headless ' , ' "', self imageName 
+			, '" eval --no-quit "' , startScript , '"'
+		workingDirectory: path fullName 
 ]
 
 { #category : #'instance control' }
@@ -67,6 +67,12 @@ TWManagedWorkerInstance >> ensureMaterialized [
 TWManagedWorkerInstance >> ensureRunning [
 	
 	state ensureRunning
+]
+
+{ #category : #testing }
+TWManagedWorkerInstance >> hasAlreadyRegistredToWatchdogWithId: anId [
+
+	^ watchdog hasAnInstanceRegistredWithId: anId
 ]
 
 { #category : #'instance control' }
@@ -87,7 +93,7 @@ TWManagedWorkerInstance >> host: anObject [
 { #category : #accessing }
 TWManagedWorkerInstance >> imageName [
 	
-	^ 'worker.image' 
+	^ watchdog templateName
 ]
 
 { #category : #accessing }
@@ -130,11 +136,12 @@ TWManagedWorkerInstance >> killed: aTWKilled [
 
 { #category : #'private - operations' }
 TWManagedWorkerInstance >> materialize [
-	
+
 	path ensureCreateDirectory.
-	watchdog templatePath copyAllTo: path.
-	
-	state checkState.
+	path = watchdog templatePath ifFalse: [ 
+		watchdog templatePath copyAllTo: path ].
+
+	state checkState
 ]
 
 { #category : #accessing }

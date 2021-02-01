@@ -29,6 +29,12 @@ TWConfigureWatchdogPresenter class >> defaultRootDirectory [
 ]
 
 { #category : #specs }
+TWConfigureWatchdogPresenter class >> defaultRootDirectory: aFileReference [
+
+	defaultRootDirectory := aFileReference
+]
+
+{ #category : #specs }
 TWConfigureWatchdogPresenter class >> defaultSpec [
 
 	^ SpBoxLayout newVertical 
@@ -43,7 +49,7 @@ TWConfigureWatchdogPresenter class >> defaultSpec [
 					add: 'Number of instances'				at: 1@4;
 					add: #nbrInstancesInput					at: 2@4 span: 2@1;
 					yourself);
-		add: #startButton withConstraints: [ :cs | cs padding: 5; height: 30 ];
+		add: #startButton withConstraints: [ :cs | cs padding: 5; height: 50 ];
 		yourself.
 							
 						
@@ -107,7 +113,7 @@ TWConfigureWatchdogPresenter >> initializePresenters [
 { #category : #initialization }
 TWConfigureWatchdogPresenter >> initializeWindow: aWindow [
 
-	aWindow initialExtent: 500@200.
+	aWindow initialExtent: 500@300.
 	aWindow title: 'Start Instances and Watchdog'
 ]
 

@@ -37,15 +37,21 @@ TWWatched >> inputQueueName [
 	^ TWWatchdogMessage workerExchange 
 ]
 
+{ #category : #operations }
+TWWatched >> instanceId [
+
+	^ instanceId
+]
+
 { #category : #configuration }
 TWWatched >> processName [ 
 	^ 'TWWatched'
 ]
 
 { #category : #configuration }
-TWWatched >> processPriority [ 
+TWWatched >> processPriority [
 
-	^ Processor userInterruptPriority 
+	^ Processor highIOPriority
 ]
 
 { #category : #operations }
