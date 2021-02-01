@@ -48,7 +48,8 @@ TWRunner >> runTestMessage: aTWMessage [
 
 	          testClass := self class environment at:
 		                       aTWMessage testClassName asSymbol.
-	          testResults := testClass buildSuite run.
+		
+				 Author useAuthor: 'TWRunner' during: [ testResults := testClass buildSuite run ].
 
 	          TWTestResponse new
 		          testResults: testResults;
