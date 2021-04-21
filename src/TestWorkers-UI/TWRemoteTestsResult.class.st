@@ -18,7 +18,7 @@ Class {
 { #category : #accessing }
 TWRemoteTestsResult >> buildLeavesFrom: aCollection type: testResultType [
 
-	^ aCollection collect: [ :t | DTTestLeaf content: t type: testResultType ]
+	^ aCollection collect: [ :t | DTTestLeafNode content: t type: testResultType ]
 ]
 
 { #category : #accessing }
@@ -65,11 +65,11 @@ TWRemoteTestsResult >> client: anObject [
 { #category : #nodes }
 TWRemoteTestsResult >> communicationErrorTestNodes [
 
-	^ client executionErrors collect: [ :e | DTTreeLeaf content: e ].
+	^ client executionErrors collect: [ :e | DTTreeLeafNode content: e ].
 ]
 
 { #category : #nodes }
 TWRemoteTestsResult >> remainingTestNodes [
 
-	^ client requests values collect: [ :e | DTTreeLeaf content: e ].
+	^ client requests values collect: [ :e | DTTreeLeafNode content: e ].
 ]
