@@ -23,3 +23,15 @@ More detailed information of each of the elements of the solution:
 - [Queue Architecture](./docs/queues.md)
 - [Watchdog Architecture](./docs/watchdog.md)
 - [Changes Propagation](./docs/changePropagation.md)
+
+
+## Installation
+
+Execute the following Metacello baseline load script
+
+```Smalltalk
+Metacello new
+	baseline: 'pharo-testWorkers';
+	repository: 'github://tesonep/pharo-testWorkers/repository';
+	load
+```
