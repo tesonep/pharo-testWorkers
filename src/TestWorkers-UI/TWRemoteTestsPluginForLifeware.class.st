@@ -17,5 +17,6 @@ TWRemoteTestsPluginForLifeware >> finishCallbackBlock: aBlock [
 TWRemoteTestsPluginForLifeware >> updateResults [
 
 	super updateResults.
-	client requests ifEmpty: [(finishCallbackBlock value: self)]
+	client requests ifEmpty: [
+		finishCallbackBlock ifNotNil: [ finishCallbackBlock value: self] ]
 ]
