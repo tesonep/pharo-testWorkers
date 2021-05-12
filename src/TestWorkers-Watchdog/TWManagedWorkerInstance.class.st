@@ -45,6 +45,7 @@ TWManagedWorkerInstance >> doStart [
 				serverHost: ''{1}'';
 				username: ''{2}'';
 				password: ''{3}''.
+			World color: Color random.
 			TWRunner uniqueInstance startWatched.' format: { 
 			               TWAbstractConnected serverHost.
 			               TWAbstractConnected username.
@@ -52,8 +53,8 @@ TWManagedWorkerInstance >> doStart [
 
 	TWSubprocessWrapper
 		runWithoutWaitingShellCommand:
-			Smalltalk vm fileName ,' ', ' --headless ' , ' "', self imageName 
-			, '" eval --no-quit "' , startScript , '"'
+			Smalltalk vm fileName ,' ', ' "', self imageName 
+			, '" eval --interactive --no-quit "' , startScript , '"'
 		workingDirectory: path fullName 
 ]
 

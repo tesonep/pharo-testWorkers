@@ -22,6 +22,69 @@ TWRunner class >> uniqueInstance [
 	^ UniqueInstance ifNil: [ UniqueInstance := self new ]
 ]
 
+{ #category : #operations }
+TWRunner >> doExecuteTestCaseNamed: testClassName [
+
+	| testClass testResults |
+	testClass := self class environment at: testClassName.
+	Author
+		useAuthor: 'TWRunner'
+		during: [ 
+			
+			[ testResults := testClass buildSuite run ] 
+				on: Notification do: [ :e | 
+					UIManager default logError: e.
+					e resume. ] ].
+	^ testResults
+]
+
+{ #category : #operations }
+TWRunner >> doRunTestMessage: aTWMessage [
+
+	self traceTestMessage: aTWMessage.
+
+	^ [ self executionResponseOf: aTWMessage withResult: (self doExecuteTestCaseNamed: aTWMessage testClassName asSymbol) ]
+		on: Exception
+		do: [ :anError | self executionErrorResponseOf: aTWMessage withError: anError ]
+]
+
+{ #category : #operations }
+TWRunner >> executionErrorResponseOf: aTWMessage withError: anError [
+
+	^ TWTestExecutionError new
+		  testClassName: aTWMessage testClassName;
+		  exceptionMessage:
+			  anError class name printString , anError messageText printString;
+		  serializedException: nil;
+		  uuid: aTWMessage uuid;
+		  yourself
+]
+
+{ #category : #operations }
+TWRunner >> executionResponseOf: aTWMessage withResult: testResults [
+
+	^ TWTestResponse new
+		  testResults: testResults;
+		  testClassName: aTWMessage testClassName;
+		  uuid: aTWMessage uuid;
+		  yourself
+]
+
+{ #category : #operations }
+TWRunner >> handleMaybeDuplicateOf: aTWMessage answering: aValuable [
+
+	| answer |
+
+	messagesSent
+		at: aTWMessage uuid
+		ifPresent: [ :message | ^ message sendOn: connection ].
+
+	answer := aValuable value.
+
+	messagesSent at: aTWMessage uuid put: answer.
+	answer sendOn: connection
+]
+
 { #category : #configuration }
 TWRunner >> inputQueueName [ 
 
@@ -37,35 +100,8 @@ TWRunner >> processName [
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
-	| testResults testClass answer |
-	messagesSent
-		at: aTWMessage uuid
-		ifPresent: [ :message | ^ message sendOn: connection ].
-	answer := [ 
-	          self traceCr:
-		          DateAndTime now asString , 'runTestMessage: class'
-		          , aTWMessage testClassName , ' uuid: ' , aTWMessage uuid.
+	self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ]
 
-	          testClass := self class environment at:
-		                       aTWMessage testClassName asSymbol.
-		
-				 Author useAuthor: 'TWRunner' during: [ testResults := testClass buildSuite run ].
-
-	          TWTestResponse new
-		          testResults: testResults;
-		          testClassName: aTWMessage testClassName;
-		          uuid: aTWMessage uuid;
-		          yourself ]
-		          on: Exception
-		          do: [ :anError | 
-			          TWTestExecutionError new
-				          testClassName: aTWMessage testClassName;
-				          exceptionMessage: anError class name printString , anError messageText printString;
-				          serializedException: nil;
-				          uuid: aTWMessage uuid;
-				          yourself ].
-	messagesSent at: aTWMessage uuid put: answer.
-	answer sendOn: connection
 ]
 
 { #category : #operations }
@@ -95,4 +131,11 @@ TWRunner >> stop [
 	
 	super stop.
 	watched ifNotNil: [ watched stop. watched := nil ].
+]
+
+{ #category : #operations }
+TWRunner >> traceTestMessage: aTWMessage [
+
+	self traceCr: DateAndTime now asString , 'runTestMessage: class'
+		, aTWMessage testClassName , ' uuid: ' , aTWMessage uuid
 ]

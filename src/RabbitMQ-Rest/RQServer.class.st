@@ -87,7 +87,6 @@ RQServer >> port: anObject [
 RQServer >> queues [
 
 	^ self from: '/api/queues' as: RQQueue
-
 ]
 
 { #category : #accessing }

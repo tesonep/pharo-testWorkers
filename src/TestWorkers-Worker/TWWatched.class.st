@@ -2,7 +2,8 @@ Class {
 	#name : #TWWatched,
 	#superclass : #TWAbstractConnected,
 	#instVars : [
-		'instanceId'
+		'instanceId',
+		'heartbeatService'
 	],
 	#category : #'TestWorkers-Worker'
 }
@@ -58,10 +59,26 @@ TWWatched >> processPriority [
 TWWatched >> shutdown [
 
 	[	
+		heartbeatService ifNotNil: [ heartbeatService stop ].
+		
 		TWKilled new 
 			instanceId: instanceId;
 			sendOn: connection.
 		
 		TWRunner uniqueInstance stop] 
 		ensure: [Smalltalk snapshot: false andQuit: true].
+]
+
+{ #category : #operations }
+TWWatched >> start [ 
+	
+	super start.
+	
+	heartbeatService := TKTParameterizableService new.
+	heartbeatService name: 'TWPingService'.
+	heartbeatService stepDelay: 1 second.
+	heartbeatService step: [ 
+		self executePing ].
+	heartbeatService start.
+
 ]

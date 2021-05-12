@@ -1,8 +1,34 @@
 Class {
 	#name : #TWStartingInstance,
 	#superclass : #TWManagedWorkerInstanceState,
+	#instVars : [
+		'startTime'
+	],
 	#category : #'TestWorkers-Watchdog'
 }
+
+{ #category : #operations }
+TWStartingInstance >> checkState [
+
+	(startTime + 60 seconds < DateAndTime now)
+		ifTrue: [ 
+			instance state: (TWMaterializedInstance on: instance).
+			instance state checkState ]
+	
+]
+
+{ #category : #operations }
+TWStartingInstance >> heartbeat [ 
+
+	self checkState 
+]
+
+{ #category : #initialization }
+TWStartingInstance >> initialize [
+
+	super initialize.
+	startTime := DateAndTime now
+]
 
 { #category : #operations }
 TWStartingInstance >> pongReceived: aTWPong [ 

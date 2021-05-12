@@ -4,9 +4,7 @@ Class {
 	#instVars : [
 		'rootDirectory',
 		'instances',
-		'pingService',
-		'creationStrategy',
-		'onChangeBlock'
+		'creationStrategy'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -147,12 +145,6 @@ TWWatchdog >> numberOfInstances: anInteger [
 		             as: OrderedCollection
 ]
 
-{ #category : #events }
-TWWatchdog >> onChange: aBlock [
-
-	onChangeBlock := aBlock
-]
-
 { #category : #configuration }
 TWWatchdog >> processName [ 
 
@@ -176,29 +168,11 @@ TWWatchdog >> rootDirectory: anObject [
 ]
 
 { #category : #operations }
-TWWatchdog >> sendPing [
-	
-	TWPing new
-		sendOn: connection.
-	
-	instances do: [:e | e heartbeat ].
-	
-	onChangeBlock ifNotNil: onChangeBlock
-]
-
-{ #category : #operations }
 TWWatchdog >> start [
 
 	self ensureQueues.
 	
 	super start.
-	
-	pingService := TKTParameterizableService new.
-	pingService name: 'TWPingService'.
-	pingService stepDelay: 1 second.
-	pingService step: [ self sendPing ].
-	pingService start.
-
 ]
 
 { #category : #operations }
@@ -221,9 +195,6 @@ TWWatchdog >> stop [
 	[self stopInstances] onErrorDo: [].
 	
 	5 seconds wait.
-
-	pingService 
-		ifNotNil: [ pingService stop ].
 	
 	super stop.
 	
