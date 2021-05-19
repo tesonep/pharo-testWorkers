@@ -65,9 +65,7 @@ TWAbstractConnected >> doConnect [
 
 	subscription := connection newSubscriptionTo: self inputQueueName.
 
-	subscription 
-		clientIndividualAck;
-		prefetchCount: 1.
+	self setSubscriptionOptions.
 	
 	connection write: subscription subscribeFrame.
 	
@@ -142,7 +140,7 @@ TWAbstractConnected >> processRequest [
 	 self processMessage: msg] 
 		on: ConnectionTimedOut , ZnIncomplete do: [ ]]
 		on: Error do:[:e | 
-			self inform: e messageText. connection ].
+			e debug ].
 	
 ]
 
@@ -156,6 +154,14 @@ TWAbstractConnected >> serverHost [
 TWAbstractConnected >> serverPort [
 
 	^ 61613
+]
+
+{ #category : #operations }
+TWAbstractConnected >> setSubscriptionOptions [
+	subscription 
+		clientIndividualAck;
+		prefetchCount: 1.
+	
 ]
 
 { #category : #operations }

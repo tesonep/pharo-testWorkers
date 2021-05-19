@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'instanceTable',
 		'startInstancesButton',
-		'stopInstancesButton'
+		'stopInstancesButton',
+		'updateProcess'
 	],
 	#category : #'TestWorkers-Watchdog-UI'
 }
@@ -85,8 +86,10 @@ TWWatchdogPresenter >> modelChanged [
 	originalSelection := 	instanceTable selection selectedItem.
 	instanceTable items: self watchdog instances.
 	instanceTable selectItem: originalSelection.
-
-	self watchdog onChange: [ self updatePresenter ]
+	
+	updateProcess ifNil: [ 
+		updateProcess := [ [ true ] whileTrue: [ 1 seconds wait. self updatePresenter. ] ] fork ].
+	
 ]
 
 { #category : #actions }
@@ -99,6 +102,8 @@ TWWatchdogPresenter >> startSelectedInstance [
 TWWatchdogPresenter >> stop [ 
 
 	SpNotification dispatchInfoTo: self application message: 'Watchdog stopped'. 
+
+	updateProcess ifNotNil: [ updateProcess terminate ].
 	self watchdog stop
 ]
 

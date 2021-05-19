@@ -44,7 +44,6 @@ TWClient >> findWorkerExchanges [
 		          password: self password;
 		          yourself.
 
-
 	^ server exchanges
 		  select: [ :anExchange | anExchange name beginsWith: 'workers' ]
 		  thenCollect: [ :anExchange | '/exchange/' , anExchange name ]
@@ -86,6 +85,21 @@ TWClient >> onUpdate: aValuable [
 TWClient >> processName [ 
 
 	^ 'TWClient'
+]
+
+{ #category : #operations }
+TWClient >> purgePendingMessages [
+
+	| server q |
+
+	server := RQServer new
+		          host: self serverHost;
+		          username: self username;
+		          password: self password;
+		          yourself.
+
+	q := server queues detect: [ :e | e name = 'testRequest' ].
+	q purge.
 ]
 
 { #category : #accessing }
@@ -158,6 +172,15 @@ TWClient >> runTestResponse: aTWTestResponse [
 TWClient >> sendChanges [
 	
 	repository currentCommit
+]
+
+{ #category : #operations }
+TWClient >> setSubscriptionOptions [
+
+	subscription 
+		clientIndividualAck;
+		prefetchCount: 10.
+	
 ]
 
 { #category : #accessing }

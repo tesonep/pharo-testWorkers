@@ -13,8 +13,8 @@ Class {
 	#superclass : #DrTestsPlugin,
 	#instVars : [
 		'client',
-		'drTestUI',
-		'startTime'
+		'startTime',
+		'finishCallbackBlock'
 	],
 	#category : #'TestWorkers-UI'
 }
@@ -37,12 +37,10 @@ TWRemoteTests class >> weight [
 	^ 7
 ]
 
-{ #category : #api }
-TWRemoteTests >> configureUI: anUI [
+{ #category : #events }
+TWRemoteTests >> finishCallbackBlock: aBlock [
 
-	drTestUI := anUI.
-	^ super configureUI: anUI.
-
+	finishCallbackBlock := aBlock
 ]
 
 { #category : #accessing }
@@ -66,6 +64,8 @@ TWRemoteTests >> runForConfiguration: aDTpluginConfiguration [
 	client resetResults.
 	
 	client onUpdate: (WeakMessageSend receiver: self selector: #updateResults).
+
+	client purgePendingMessages.
 
 	(aDTpluginConfiguration items reject: [ :e | e isAbstract ]) shuffle
 		do: [ :aClass | client runTestClass: aClass ].
@@ -98,7 +98,11 @@ TWRemoteTests >> updateResults [
 	client requests isEmpty 
 		ifTrue: [ | duration |
 			duration := DateAndTime now - startTime. 
-			drTestUI updateStatus: 'Finished: ' , duration printString ]
-		ifFalse: [ drTestUI updateStatus: 'Running tests...' ].
-	drTestUI updateWithPluginResult: result
+			self announceStatusChanged: 'Finished: ' , duration printString ]
+		ifFalse: [ self announceStatusChanged: 'Running tests...' ].
+
+	self announceResultsChanged: result.
+
+	client requests ifEmpty: [
+		finishCallbackBlock ifNotNil: [ finishCallbackBlock value: self] ]
 ]
