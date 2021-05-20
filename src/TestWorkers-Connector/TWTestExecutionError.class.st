@@ -25,6 +25,12 @@ TWTestExecutionError >> execute: client [
 	client runTestExecutionError: self
 ]
 
+{ #category : #testing }
+TWTestExecutionError >> hasException [
+	
+	^ false
+]
+
 { #category : #sending }
 TWTestExecutionError >> queueName [
 
