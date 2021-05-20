@@ -54,7 +54,7 @@ TWManagedWorkerInstance >> doStart [
 	TWSubprocessWrapper
 		runWithoutWaitingShellCommand:
 			Smalltalk vm fileName ,' ', ' "', self imageName 
-			, '" eval --interactive --no-quit "' , startScript , '"'
+			, '" eval --no-quit "' , startScript , '"'
 		workingDirectory: path fullName 
 ]
 
