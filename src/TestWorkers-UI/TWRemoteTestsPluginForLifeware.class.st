@@ -1,5 +1,5 @@
 Class {
 	#name : #TWRemoteTestsPluginForLifeware,
-	#superclass : #TWRemoteTests,
+	#superclass : #TWRemoteTestsPlugin,
 	#category : #'TestWorkers-UI'
 }

@@ -27,14 +27,14 @@ TWRunner >> doExecuteTestCaseNamed: testClassName [
 
 	| testClass testResults |
 	testClass := self class environment at: testClassName.
+	testResults := TWTestResults new.
+	
 	Author
 		useAuthor: 'TWRunner'
-		during: [ 
-			
-			[ testResults := testClass buildSuite run ] 
-				on: Notification do: [ :e | 
-					UIManager default logError: e.
-					e resume. ] ].
+		during: [ 			
+			[	testResults executingContext: thisContext.
+				testClass buildSuite run: testResults ] 
+				on: Notification do: [ :e | e resume. ] ].
 	^ testResults
 ]
 

@@ -9,7 +9,7 @@ The most interesting methods I have are:
  - `updateResults` : This message is sent by the TWClient when a received message has update it. I force the DrTest UI to update. Generating a new result tree and updating the status bar
 "
 Class {
-	#name : #TWRemoteTests,
+	#name : #TWRemoteTestsPlugin,
 	#superclass : #DrTestsPlugin,
 	#instVars : [
 		'client',
@@ -20,43 +20,49 @@ Class {
 }
 
 { #category : #'api - accessing' }
-TWRemoteTests class >> pluginName [
+TWRemoteTestsPlugin class >> pluginName [
 	
 	^ 'Remote Runner'
 ]
 
 { #category : #'api - accessing' }
-TWRemoteTests class >> pluginResultClass [
+TWRemoteTestsPlugin class >> pluginResultClass [
 	
 	^ TWRemoteTestsResult
 ]
 
 { #category : #'api - accessing' }
-TWRemoteTests class >> weight [
+TWRemoteTestsPlugin class >> weight [
 
 	^ 7
 ]
 
 { #category : #events }
-TWRemoteTests >> finishCallbackBlock: aBlock [
+TWRemoteTestsPlugin >> finishCallbackBlock: aBlock [
 
 	finishCallbackBlock := aBlock
 ]
 
+{ #category : #ui }
+TWRemoteTestsPlugin >> pluginPresenterClass [ 
+
+	^ TWPluginPresenter
+]
+
 { #category : #accessing }
-TWRemoteTests >> pragmaForResultTrees [
+TWRemoteTestsPlugin >> pragmaForResultTrees [
 
 	^ #'dtRemoteTestResultTreeNamed:order:'
 ]
 
 { #category : #api }
-TWRemoteTests >> resultButtonHelp [
+TWRemoteTestsPlugin >> resultButtonHelp [
 
 	^ 'Browse the method selected in the results list.'
 ]
 
 { #category : #api }
-TWRemoteTests >> runForConfiguration: aDTpluginConfiguration [
+TWRemoteTestsPlugin >> runForConfiguration: aDTpluginConfiguration [
 
 	| result |
 	client := TWClient uniqueInstance.
@@ -78,17 +84,17 @@ TWRemoteTests >> runForConfiguration: aDTpluginConfiguration [
 ]
 
 { #category : #api }
-TWRemoteTests >> startButtonHelp [
+TWRemoteTestsPlugin >> startButtonHelp [
 	^ 'Run test in selected packages using remote servers'
 ]
 
 { #category : #api }
-TWRemoteTests >> startButtonLabel [
+TWRemoteTestsPlugin >> startButtonLabel [
 	^ 'Run Remote'
 ]
 
 { #category : #events }
-TWRemoteTests >> updateResults [
+TWRemoteTestsPlugin >> updateResults [
 	
 	| result |
 	
