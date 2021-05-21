@@ -44,13 +44,13 @@ BaselineOfTestWorkers >> baseline: spec [
 				package: 'TestWorkers-Worker' with: [ spec requires: #('TestWorkers-Connector') ];
 				package: 'TestWorkers-Client' with: [ spec requires: #('TestWorkers-Connector') ];
 				package: 'TestWorkers-UI' with: [ spec requires: #('TestWorkers-Client') ];
-				package: 'TestWorkers-Connector-Tests' with: [ spec requires: #('TestWorkers-Connector') ];
+				
 				package: 'TestWorkers-Changes-Tests' with: [ spec requires: 'TestWorkers-Changes' ].
 
 			"Groups"
 			spec
 				group: 'changes' with: #('TestWorkers-Changes');
-				group: 'tests' with: #('TestWorkers-Changes-Tests' 'TestWorkers-Connector-Tests');
+				group: 'tests' with: #('TestWorkers-Changes-Tests');
 				group: 'worker' with: #('TestWorkers-Worker');
 				group: 'client' with: #('TestWorkers-Client');
 				group: 'watchdog' with: #('TestWorkers-Watchdog');	
