@@ -104,19 +104,12 @@ TWAbstractConnected >> processMessage: aStampMessageFrame [
 
 	| message |
 	
-	[  
-		message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
-		message messageFrame: aStampMessageFrame.
-		message execute: self.
-		((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
-			ifFalse: [ 
-				connection write: aStampMessageFrame ackFrame ]. 
-	]	onErrorDo: [:e | | nackFrame |
-			nackFrame := aStampMessageFrame nackFrame.
-			connection write: nackFrame.
-			e debug ].
-	
-	
+	message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
+	message messageFrame: aStampMessageFrame.
+	message execute: self.
+	((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
+		ifFalse: [ 
+			connection write: aStampMessageFrame ackFrame ]
 ]
 
 { #category : #configuration }
@@ -135,13 +128,23 @@ TWAbstractConnected >> processPriority [
 TWAbstractConnected >> processRequest [
 
 	| msg |
-
-	[[msg := connection readMessage.
-	 self processMessage: msg] 
-		on: ConnectionTimedOut , ZnIncomplete do: [ ]]
-		on: Error do:[:e | 
-			e debug ].
-	
+	[
+	[
+	[msg := connection readMessage.
+	self processMessage: msg] on: ZnIncomplete
+		do: []]
+		on: NetworkError
+		do:
+			[:e |
+			| nackFrame |
+			[connection isConnected] whileFalse: [self doConnect].
+			listenerProcess isActiveProcess ifFalse: [self startListener].
+			msg
+				ifNotNil:
+					[nackFrame := msg nackFrame.
+					[connection write: nackFrame] onErrorDo: []]]]
+		on: Error
+		do: []
 ]
 
 { #category : #configuration }
