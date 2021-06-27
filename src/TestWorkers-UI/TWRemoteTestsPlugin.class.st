@@ -74,7 +74,7 @@ TWRemoteTestsPlugin >> runForConfiguration: aDTpluginConfiguration [
 	client purgePendingMessages.
 
 	(aDTpluginConfiguration items reject: [ :e | e isAbstract ]) shuffle
-		do: [ :aClass | client runTestClass: aClass ].
+		do: [ :anItem | anItem runTestInClient: client ].
 
 	result := TWRemoteTestsResult new.
 	result client: client.
