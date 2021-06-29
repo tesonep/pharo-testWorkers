@@ -74,6 +74,11 @@ TWWatched >> start [
 	
 	super start.
 	
+	TKTConfiguration serviceManager services 
+		detect: [ :aService | aService name = 'TWPingService' ]
+		ifFound: [ :oldService | 
+			oldService stop ].
+	
 	heartbeatService := TKTParameterizableService new.
 	heartbeatService name: 'TWPingService'.
 	heartbeatService stepDelay: 1 second.

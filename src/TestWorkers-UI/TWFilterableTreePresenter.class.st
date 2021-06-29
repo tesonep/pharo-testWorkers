@@ -21,3 +21,9 @@ TWFilterableTreePresenter >> initializeWidgets [
 								autoAccept: true;
 								yourself
 ]
+
+{ #category : #initialization }
+TWFilterableTreePresenter >> selectAll [ 
+	
+	^ self listPresenter selectPaths: ((1 to: self listPresenter roots size) collect: [ :i | { i }]).
+]
