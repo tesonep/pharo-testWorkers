@@ -60,7 +60,8 @@ TWAbstractConnected >> doConnect [
 	connection login: self username.
 	connection passcode: self password.
 
-	connection timeout: 5.
+	connection timeout: 5 "seconds".
+	connection heartbeat: 5 * 1000 / 2 "miliseconds".
 	connection open.
 
 	subscription := connection newSubscriptionTo: self inputQueueName.
@@ -103,7 +104,6 @@ TWAbstractConnected >> password [
 TWAbstractConnected >> processMessage: aStampMessageFrame [
 
 	| message |
-	
 	message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
 	message messageFrame: aStampMessageFrame.
 	message execute: self.
@@ -132,19 +132,20 @@ TWAbstractConnected >> processRequest [
 	[
 	[msg := connection readMessage.
 	self processMessage: msg] on: ZnIncomplete
-		do: []]
+		do: [:e | self traceError: e]]
 		on: NetworkError
 		do:
 			[:e |
 			| nackFrame |
 			[connection isConnected] whileFalse: [self doConnect].
 			listenerProcess isActiveProcess ifFalse: [self startListener].
+			self traceError: e.
 			msg
 				ifNotNil:
 					[nackFrame := msg nackFrame.
-					[connection write: nackFrame] onErrorDo: []]]]
+					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]]]
 		on: Error
-		do: []
+		do: [:e | self traceError: e]
 ]
 
 { #category : #configuration }
@@ -191,6 +192,24 @@ TWAbstractConnected >> stop [
 		"I am closing it" ].
 	
 	listenerProcess ifNotNil: [ listenerProcess terminate ].
+]
+
+{ #category : #'tracing errors ' }
+TWAbstractConnected >> traceError: anError [ 
+
+	| timestamp |
+	timestamp := DateAndTime now.
+	
+	(String streamContents: [ :stream |
+		timestamp printYMDOn: stream.
+		stream space.
+		timestamp printHMSOn: stream. 
+		stream 
+			space;
+			print: self;
+			nextPutAll: ' :: ';
+			print: anError
+		 ]) traceCr.
 ]
 
 { #category : #configuration }

@@ -23,17 +23,16 @@ TWRunner class >> uniqueInstance [
 ]
 
 { #category : #operations }
-TWRunner >> doExecuteTestCaseNamed: testClassName [
+TWRunner >> doExecuteTestCaseMessage: testMessage [
 
-	| testClass testResults |
-	testClass := self class environment at: testClassName.
+	| testResults |
 	testResults := TWTestResults new.
 	
 	Author
 		useAuthor: 'TWRunner'
 		during: [ 			
 			[	testResults executingContext: thisContext.
-				testClass buildSuite run: testResults ] 
+				testMessage buildSuite run: testResults ] 
 				on: Notification do: [ :e | e resume. ] ].
 	^ testResults
 ]
@@ -43,7 +42,7 @@ TWRunner >> doRunTestMessage: aTWMessage [
 
 	self traceTestMessage: aTWMessage.
 
-	^ [ self executionResponseOf: aTWMessage withResult: (self doExecuteTestCaseNamed: aTWMessage testClassName asSymbol) ]
+	^ [ self executionResponseOf: aTWMessage withResult: (self doExecuteTestCaseMessage: aTWMessage) ]
 		on: Exception
 		do: [ :anError | self executionErrorResponseOf: aTWMessage withError: anError ]
 ]
@@ -63,11 +62,8 @@ TWRunner >> executionErrorResponseOf: aTWMessage withError: anError [
 { #category : #operations }
 TWRunner >> executionResponseOf: aTWMessage withResult: testResults [
 
-	^ TWTestResponse new
-		  testResults: testResults;
-		  testClassName: aTWMessage testClassName;
-		  uuid: aTWMessage uuid;
-		  yourself
+	^ aTWMessage executionResponseFor: testResults.
+	
 ]
 
 { #category : #operations }

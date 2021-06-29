@@ -20,3 +20,21 @@ TWPluginPresenter class >> buildResultGroupWith: presenterInstance [
 		register: pluginCommands beDisplayedAsGroup;
 		yourself
 ]
+
+{ #category : #'private - initialization' }
+TWPluginPresenter >> initializeItemsListAndLabel [
+
+	itemsList := self instantiate: TWFilterableTreePresenter.
+	itemsList
+		help: 'Select the classes to analyze. Cmd+A or Ctrl+A to select all classes.';
+		displayBlock: [ :item | item name ];
+		childrenBlock: [ :item | item testSelectors collect: [ :e | TWSingleTestItem new
+				testSelector: e;
+				testClass: item;
+				yourself ] ]; 
+		whenSelectionChangedDo: [ self whenItemsSelectionChanged: self selectedItems ];
+		beMultipleSelection;
+		contextMenu: [ (self rootCommandsGroup / 'List items menu') beRoot asMenuPresenter ].
+	packagesList
+		whenSelectionChangedDo: [ self whenPackagesSelectionChanged: self packagesSelected ]
+]

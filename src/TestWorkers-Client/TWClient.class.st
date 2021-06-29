@@ -131,6 +131,23 @@ TWClient >> resetResults [
 	
 ]
 
+{ #category : #running }
+TWClient >> runSingleTest: aSingleTest [ 
+
+	| request |
+	
+	request := TWSingleTestRequest new
+		testClassName: aSingleTest testClass name;
+		testSelector: aSingleTest testSelector;
+		yourself.
+		
+	requests at: request uuid asString put: request.
+		
+	request sendOn: connection
+
+		
+]
+
 { #category : #operations }
 TWClient >> runTestClass: aTestCase [
 
