@@ -50,7 +50,7 @@ BaselineOfTestWorkers >> baseline: spec [
 			"Groups"
 			spec
 				group: 'changes' with: #('TestWorkers-Changes');
-				group: 'tests' with: #('TestWorkers-Changes-Tests' 'TestWorkers-Connector-Tests');
+				group: 'tests' with: #('TestWorkers-Changes-Tests');
 				group: 'worker' with: #('TestWorkers-Worker');
 				group: 'client' with: #('TestWorkers-Client');
 				group: 'watchdog' with: #('TestWorkers-Watchdog');	
