@@ -152,6 +152,13 @@ TWWatchdog >> processName [
 ]
 
 { #category : #operations }
+TWWatchdog >> processRequest [ 
+
+	super processRequest.
+	instances do: [ :e | e heartbeat ].
+]
+
+{ #category : #operations }
 TWWatchdog >> receivePong: aTWPong [
 
 	instances do: [ :anInstance | anInstance pongReceived: aTWPong ]
@@ -212,6 +219,7 @@ TWWatchdog >> stopInstance: aWorkerInstance [
 TWWatchdog >> stopInstances [
 
 	TWKill new sendOn: connection.
+	instances do: [ :e | e heartbeat ].
 
 	
 		

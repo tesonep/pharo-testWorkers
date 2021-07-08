@@ -64,11 +64,12 @@ TWAbstractConnected >> doConnect [
 	connection heartbeat: 5 * 1000 / 2 "miliseconds".
 	connection open.
 
-	subscription := connection newSubscriptionTo: self inputQueueName.
+	connection isConnected ifTrue: [ 
+		subscription := connection newSubscriptionTo: self inputQueueName.
 
-	self setSubscriptionOptions.
-	
-	connection write: subscription subscribeFrame.
+		self setSubscriptionOptions.
+		
+		connection write: subscription subscribeFrame.]
 	
 ]
 
@@ -181,7 +182,10 @@ TWAbstractConnected >> startListener [
 	listenerProcess := [ 
 		[ connection isConnected 
 			ifFalse: [ self doConnect ].
-		  self processRequest ] repeat ] forkAt: self processPriority named: self processName.
+		  connection isConnected
+			ifTrue: [ self processRequest ] ] repeat ] 
+		forkAt: self processPriority 
+		named: self processName.
 ]
 
 { #category : #operations }
@@ -210,6 +214,7 @@ TWAbstractConnected >> traceError: anError [
 			nextPutAll: ' :: ';
 			print: anError
 		 ]) traceCr.
+	
 ]
 
 { #category : #configuration }
