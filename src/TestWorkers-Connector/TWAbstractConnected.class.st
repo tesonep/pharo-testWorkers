@@ -64,11 +64,12 @@ TWAbstractConnected >> doConnect [
 	connection heartbeat: 5 * 1000 / 2 "miliseconds".
 	connection open.
 
-	subscription := connection newSubscriptionTo: self inputQueueName.
+	connection isConnected ifTrue: [ 
+		subscription := connection newSubscriptionTo: self inputQueueName.
 
-	self setSubscriptionOptions.
-	
-	connection write: subscription subscribeFrame.
+		self setSubscriptionOptions.
+		
+		connection write: subscription subscribeFrame.]
 	
 ]
 
@@ -104,12 +105,15 @@ TWAbstractConnected >> password [
 TWAbstractConnected >> processMessage: aStampMessageFrame [
 
 	| message |
+	"We ACK the message as soon as we get it"
+	((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
+		ifFalse: [ 
+			connection write: aStampMessageFrame ackFrame ].
+
 	message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
 	message messageFrame: aStampMessageFrame.
 	message execute: self.
-	((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
-		ifFalse: [ 
-			connection write: aStampMessageFrame ackFrame ]
+
 ]
 
 { #category : #configuration }
@@ -140,10 +144,13 @@ TWAbstractConnected >> processRequest [
 			[connection isConnected] whileFalse: [self doConnect].
 			listenerProcess isActiveProcess ifFalse: [self startListener].
 			self traceError: e.
+			
+			" If the Msg is ACK when received, we don't need to NACK it on an error. It has been already removed from the queue.
 			msg
 				ifNotNil:
 					[nackFrame := msg nackFrame.
-					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]]]
+					 nackFrame requeue: false.
+					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]"]]
 		on: Error
 		do: [:e | self traceError: e]
 ]
@@ -181,7 +188,10 @@ TWAbstractConnected >> startListener [
 	listenerProcess := [ 
 		[ connection isConnected 
 			ifFalse: [ self doConnect ].
-		  self processRequest ] repeat ] forkAt: self processPriority named: self processName.
+		  connection isConnected
+			ifTrue: [ self processRequest ] ] repeat ] 
+		forkAt: self processPriority 
+		named: self processName.
 ]
 
 { #category : #operations }
@@ -210,6 +220,7 @@ TWAbstractConnected >> traceError: anError [
 			nextPutAll: ' :: ';
 			print: anError
 		 ]) traceCr.
+	
 ]
 
 { #category : #configuration }
