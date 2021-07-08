@@ -105,12 +105,15 @@ TWAbstractConnected >> password [
 TWAbstractConnected >> processMessage: aStampMessageFrame [
 
 	| message |
+	"We ACK the message as soon as we get it"
+	((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
+		ifFalse: [ 
+			connection write: aStampMessageFrame ackFrame ].
+
 	message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
 	message messageFrame: aStampMessageFrame.
 	message execute: self.
-	((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
-		ifFalse: [ 
-			connection write: aStampMessageFrame ackFrame ]
+
 ]
 
 { #category : #configuration }
@@ -141,10 +144,13 @@ TWAbstractConnected >> processRequest [
 			[connection isConnected] whileFalse: [self doConnect].
 			listenerProcess isActiveProcess ifFalse: [self startListener].
 			self traceError: e.
+			
+			" If the Msg is ACK when received, we don't need to NACK it on an error. It has been already removed from the queue.
 			msg
 				ifNotNil:
 					[nackFrame := msg nackFrame.
-					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]]]
+					 nackFrame requeue: false.
+					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]"]]
 		on: Error
 		do: [:e | self traceError: e]
 ]
