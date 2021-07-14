@@ -76,9 +76,10 @@ TWRunner >> handleMaybeDuplicateOf: aTWMessage answering: aValuable [
 		ifPresent: [ :message | ^ message sendOn: connection ].
 
 	answer := aValuable value.
-
-	messagesSent at: aTWMessage uuid put: answer.
-	answer sendOn: connection
+	
+	self ensureConnected.
+	answer sendOn: connection.
+	messagesSent at: aTWMessage uuid put: answer
 ]
 
 { #category : #configuration }

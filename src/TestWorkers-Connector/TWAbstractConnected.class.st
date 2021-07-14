@@ -74,6 +74,12 @@ TWAbstractConnected >> doConnect [
 ]
 
 { #category : #operations }
+TWAbstractConnected >> ensureConnected [
+
+	[ connection isConnected ] whileFalse: [ self doConnect ]
+]
+
+{ #category : #operations }
 TWAbstractConnected >> ensureStart [
 
 	(connection isConnected and: [ listenerProcess isTerminating not ])
@@ -132,27 +138,29 @@ TWAbstractConnected >> processPriority [
 TWAbstractConnected >> processRequest [
 
 	| msg |
+	[ 
+	[ 
 	[
-	[
-	[msg := connection readMessage.
-	self processMessage: msg] on: ZnIncomplete
-		do: [:e | self traceError: e]]
+	self ensureConnected.
+	msg := connection readMessage.
+	self processMessage: msg ]
+		on: ZnIncomplete
+		do: [ :e | self traceError: e ] ]
 		on: NetworkError
-		do:
-			[:e |
+		do: [ :e | 
 			| nackFrame |
-			[connection isConnected] whileFalse: [self doConnect].
-			listenerProcess isActiveProcess ifFalse: [self startListener].
-			self traceError: e.
-			
+			self ensureConnected.
+			listenerProcess isActiveProcess ifFalse: [ self startListener ].
+			self traceError: e
+
 			" If the Msg is ACK when received, we don't need to NACK it on an error. It has been already removed from the queue.
 			msg
 				ifNotNil:
 					[nackFrame := msg nackFrame.
 					 nackFrame requeue: false.
-					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]"]]
+					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]" ] ]
 		on: Error
-		do: [:e | self traceError: e]
+		do: [ :e | self traceError: e ]
 ]
 
 { #category : #configuration }
@@ -186,8 +194,7 @@ TWAbstractConnected >> start [
 TWAbstractConnected >> startListener [
 	
 	listenerProcess := [ 
-		[ connection isConnected 
-			ifFalse: [ self doConnect ].
+		[ self ensureConnected.
 		  connection isConnected
 			ifTrue: [ self processRequest ] ] repeat ] 
 		forkAt: self processPriority 
