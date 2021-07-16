@@ -142,8 +142,9 @@ TWClient >> runSingleTest: aSingleTest [
 		yourself.
 		
 	requests at: request uuid asString put: request.
-		
-	request sendOn: connection
+	
+	"RabbitMQ likes to close the connection. This ensures we retry until we are able to connect again."
+	self ensureNetworkSuccess: [ request sendOn: connection ]
 
 		
 ]
@@ -158,8 +159,9 @@ TWClient >> runTestClass: aTestCase [
 		yourself.
 		
 	requests at: request uuid asString put: request.
-		
-	request sendOn: connection
+	
+	"RabbitMQ likes to close the connection. This ensures we retry until we are able to connect again."
+	self ensureNetworkSuccess: [ request sendOn: connection ]
 
 	
 ]
