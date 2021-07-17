@@ -89,10 +89,12 @@ TWAbstractConnected >> ensureNetworkSuccess: aBlock [
 	Start by trying three times, and then try once every second."
 
 	block := [ 
-		[ [ 
+		[ [ [ 
 		self ensureConnected.
 		^ aBlock value ]
 			on: StampError
+			do: [ :e | self traceError: e ] ]
+			on: ZnIncomplete
 			do: [ :e | self traceError: e ] ]
 			on: NetworkError
 			do: [ :e | self traceError: e ]
