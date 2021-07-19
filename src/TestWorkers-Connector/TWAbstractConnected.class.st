@@ -103,7 +103,8 @@ TWAbstractConnected >> ensureNetworkSuccess: aBlock [
 	1 to: 3 do: [ :i | block value ].
 
 	[
-	connection close. "Resolves some problems."
+	[ connection close "Resolves some problems." ]
+		onErrorDo: [ "Ignore, we want it closed." ].
 	(Delay forSeconds: 1) wait.
 	block value ] repeat
 
