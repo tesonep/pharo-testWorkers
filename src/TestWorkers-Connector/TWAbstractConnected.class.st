@@ -74,6 +74,42 @@ TWAbstractConnected >> doConnect [
 ]
 
 { #category : #operations }
+TWAbstractConnected >> ensureConnected [
+	"Ensure the connection is established.
+	Keep in mind that this can itself cause an network or stamp error."
+
+	[ connection isConnected ] whileFalse: [ self doConnect ]
+]
+
+{ #category : #operations }
+TWAbstractConnected >> ensureNetworkSuccess: aBlock [
+
+	| block |
+	"Run the block until it succeeds without a network error, or we get any other error.
+	Start by trying three times, and then try once every second."
+
+	block := [ 
+		[ [ [ 
+		self ensureConnected.
+		^ aBlock value ]
+			on: StampError
+			do: [ :e | self traceError: e ] ]
+			on: ZnIncomplete
+			do: [ :e | self traceError: e ] ]
+			on: NetworkError
+			do: [ :e | self traceError: e ]
+	].
+
+	1 to: 3 do: [ :i | block value ].
+
+	[
+	connection close. "Resolves some problems."
+	(Delay forSeconds: 1) wait.
+	block value ] repeat
+
+]
+
+{ #category : #operations }
 TWAbstractConnected >> ensureStart [
 
 	(connection isConnected and: [ listenerProcess isTerminating not ])
@@ -103,16 +139,23 @@ TWAbstractConnected >> password [
 
 { #category : #processing }
 TWAbstractConnected >> processMessage: aStampMessageFrame [
-
 	| message |
-	"We ACK the message as soon as we get it"
-	((aStampMessageFrame headerAt: 'subscription') includesSubstring: '/temp-queue/') 
-		ifFalse: [ 
-			connection write: aStampMessageFrame ackFrame ].
-
+	
+	[
 	message := FLMaterializer materializeFromByteArray: aStampMessageFrame body.
 	message messageFrame: aStampMessageFrame.
-	message execute: self.
+
+	"We ACK the message as soon as we get it"
+	((aStampMessageFrame headerAt: 'subscription')
+		includesSubstring: '/temp-queue/')
+			ifFalse: [ connection write: aStampMessageFrame ackFrame ] ]
+			onErrorDo: [ :e |
+				"If there is an error here, send a NACK if possible."
+				self traceError: e.
+				connection write: aStampMessageFrame nackFrame.
+				^self ].
+			
+	message execute: self
 
 ]
 
@@ -132,27 +175,13 @@ TWAbstractConnected >> processPriority [
 TWAbstractConnected >> processRequest [
 
 	| msg |
-	[
-	[
 	[msg := connection readMessage.
-	self processMessage: msg] on: ZnIncomplete
-		do: [:e | self traceError: e]]
-		on: NetworkError
-		do:
+	self processMessage: msg]
+		onErrorDo:
 			[:e |
-			| nackFrame |
-			[connection isConnected] whileFalse: [self doConnect].
-			listenerProcess isActiveProcess ifFalse: [self startListener].
 			self traceError: e.
-			
-			" If the Msg is ACK when received, we don't need to NACK it on an error. It has been already removed from the queue.
-			msg
-				ifNotNil:
-					[nackFrame := msg nackFrame.
-					 nackFrame requeue: false.
-					[connection write: nackFrame] onErrorDo: [:x | self traceError: x]]"]]
-		on: Error
-		do: [:e | self traceError: e]
+			self ensureConnected.
+			listenerProcess isActiveProcess ifFalse: [ self startListener ] ]
 ]
 
 { #category : #configuration }
@@ -184,14 +213,13 @@ TWAbstractConnected >> start [
 
 { #category : #operations }
 TWAbstractConnected >> startListener [
-	
-	listenerProcess := [ 
-		[ connection isConnected 
-			ifFalse: [ self doConnect ].
-		  connection isConnected
-			ifTrue: [ self processRequest ] ] repeat ] 
-		forkAt: self processPriority 
-		named: self processName.
+
+	listenerProcess :=
+			[ 
+			[ self ensureNetworkSuccess: [ self processRequest ] ]
+				repeat]
+				forkAt: self processPriority
+				named: self processName
 ]
 
 { #category : #operations }
