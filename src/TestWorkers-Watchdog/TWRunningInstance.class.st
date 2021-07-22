@@ -2,7 +2,8 @@ Class {
 	#name : #TWRunningInstance,
 	#superclass : #TWManagedWorkerInstanceState,
 	#instVars : [
-		'lastPong'
+		'lastPong',
+		'testId'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -44,7 +45,8 @@ TWRunningInstance >> pongReceived: aTWPong [
 	
 	instance instanceId = aTWPong instanceId 
 		ifFalse: [ ^ self ].
-		
+	
+	testId := aTWPong testId.
 	lastPong := DateAndTime now
 	
 ]
@@ -53,4 +55,11 @@ TWRunningInstance >> pongReceived: aTWPong [
 TWRunningInstance >> stateName [
 
 	^ 'Running'
+]
+
+{ #category : #operations }
+TWRunningInstance >> testId [
+
+	^ testId
+	
 ]

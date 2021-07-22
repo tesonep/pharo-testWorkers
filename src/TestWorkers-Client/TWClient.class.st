@@ -193,6 +193,13 @@ TWClient >> sendChanges [
 	repository currentCommit
 ]
 
+{ #category : #'as yet unclassified' }
+TWClient >> sendMissingRequests [
+	
+	requests do: [ :request |
+		self ensureNetworkSuccess: [ request sendOn: connection ] ]
+]
+
 { #category : #operations }
 TWClient >> setSubscriptionOptions [
 

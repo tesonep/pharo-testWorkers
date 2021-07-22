@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'rootDirectory',
 		'instances',
-		'creationStrategy'
+		'creationStrategy',
+		'idleSince'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -29,6 +30,15 @@ TWWatchdog class >> openExample [
 		openWithSpec.
 		
 	^ watchdog
+]
+
+{ #category : #'as yet unclassified' }
+TWWatchdog >> areAllInstancesIdle [
+	^instances allSatisfy: 
+			[:anInstance |
+			anInstance timeSinceLastPong
+				ifNotNil: [:t | t > 80 seconds or: [ anInstance state testId isNil ] ]
+				ifNil: [ anInstance state testId isNil ] ]
 ]
 
 { #category : #'private-instances-control' }
@@ -151,11 +161,12 @@ TWWatchdog >> processName [
 	^ 'TWWatchdog'
 ]
 
-{ #category : #operations }
+{ #category : #'as yet unclassified' }
 TWWatchdog >> processRequest [ 
 
 	super processRequest.
 	instances do: [ :e | e heartbeat ].
+	self testForIdle
 ]
 
 { #category : #operations }
@@ -236,6 +247,17 @@ TWWatchdog >> templateName [
 TWWatchdog >> templatePath [ 
 
 	^ rootDirectory / creationStrategy templateFolderName
+]
+
+{ #category : #'as yet unclassified' }
+TWWatchdog >> testForIdle [
+	self areAllInstancesIdle ifFalse: [idleSince := DateAndTime now].
+	idleSince
+		ifNotNil: 
+			[DateAndTime now - idleSince > 80 seconds
+				ifTrue: 
+					[idleSince := DateAndTime now.
+					TWClient uniqueInstance sendMissingRequests]]
 ]
 
 { #category : #initialization }

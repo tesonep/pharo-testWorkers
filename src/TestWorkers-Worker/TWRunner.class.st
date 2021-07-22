@@ -100,13 +100,15 @@ TWRunner >> processName [
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
+	watched ifNotNil: [ watched testId: aTWMessage uuid ].
 	[ connection close "Disconnect because some tests might mess with the connection. This forces us to reconnect, but longer tests will lose the connection anyway." ]
 		onErrorDo: [ "Ignore, we want it closed." ].
 	[ self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ] ]
 		onErrorDo: [ :e |
 			"If there is an unhandled error, requeue the tests message."
 			self traceError: e.
-			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ]
+			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ].
+	watched ifNotNil: [ watched testId: nil ]
 
 ]
 

@@ -53,6 +53,7 @@ TWWatchdogPresenter >> initializePresenters [
 		addColumn: (SpStringTableColumn title: 'ID' evaluated: #instanceId);
 		addColumn: (SpStringTableColumn title: 'Host' evaluated: #host);
 		addColumn: (SpStringTableColumn title: 'State' evaluated: [:e | e state stateName]);
+		addColumn: (SpStringTableColumn title: 'Test' evaluated: [:e | e state testId]);
 		addColumn: (SpStringTableColumn title: 'Last Pong' evaluated: [:e | 
 			e timeSinceLastPong ifNotNil: [ :aDuration | (aDuration roundTo: 1 second) humanReadablePrintString ]]);
 		contextMenu: [ self contextMenu ];

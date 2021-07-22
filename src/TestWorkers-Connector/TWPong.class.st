@@ -5,7 +5,8 @@ Class {
 		'instanceId',
 		'path',
 		'pid',
-		'host'
+		'host',
+		'testId'
 	],
 	#category : #'TestWorkers-Connector'
 }
@@ -75,4 +76,16 @@ TWPong >> queueName [
 TWPong >> replyQueue [
 
 	^ messageFrame headerAt: 'reply-to'
+]
+
+{ #category : #accessing }
+TWPong >> testId [
+
+	^ testId
+]
+
+{ #category : #accessing }
+TWPong >> testId: anObject [
+
+	testId := anObject
 ]
