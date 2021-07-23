@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'connection',
 		'subscription',
-		'listenerProcess'
+		'listenerProcess',
+		'instanceId'
 	],
 	#classVars : [
 		'Password',
@@ -103,8 +104,7 @@ TWAbstractConnected >> ensureNetworkSuccess: aBlock [
 	1 to: 3 do: [ :i | block value ].
 
 	[
-	[ connection close "Resolves some problems." ]
-		onErrorDo: [ "Ignore, we want it closed." ].
+	connection closeIgnoringErrors. "Resolves some problems."
 	(Delay forSeconds: 1) wait.
 	block value ] repeat
 
@@ -124,12 +124,19 @@ TWAbstractConnected >> initialize [
 
 	super initialize.
 	connection := StampClient new.
+	instanceId := UUID new
 ]
 
 { #category : #configuration }
 TWAbstractConnected >> inputQueueName [ 
 
 	^ self subclassResponsibility 
+]
+
+{ #category : #operations }
+TWAbstractConnected >> instanceId [
+
+	^ instanceId
 ]
 
 { #category : #configuration }
@@ -201,7 +208,9 @@ TWAbstractConnected >> serverPort [
 TWAbstractConnected >> setSubscriptionOptions [
 	subscription 
 		clientIndividualAck;
-		prefetchCount: 1.
+		prefetchCount: 1;
+		id: instanceId.
+	subscription subscribeFrame persistent: true
 	
 ]
 
@@ -226,11 +235,13 @@ TWAbstractConnected >> startListener [
 { #category : #operations }
 TWAbstractConnected >> stop [
 
-	[connection close] on: ZnIncomplete, Error do: [ 
-		"If the message is incomplete I don't care"
-		"I am closing it" ].
-	
-	listenerProcess ifNotNil: [ listenerProcess terminate ].
+	[ 
+	connection write: subscription unsubscribeFrame.
+	connection close ]
+		on: ZnIncomplete , Error
+		do: [ "If the message is incomplete I don't care""I am closing it" ].
+
+	listenerProcess ifNotNil: [ listenerProcess terminate ]
 ]
 
 { #category : #'tracing errors ' }

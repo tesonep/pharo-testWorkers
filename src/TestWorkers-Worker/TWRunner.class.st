@@ -3,7 +3,8 @@ Class {
 	#superclass : #TWAbstractConnected,
 	#instVars : [
 		'watched',
-		'messagesSent'
+		'messagesSent',
+		'heartbeatService'
 	],
 	#classVars : [
 		'UniqueInstance'
@@ -101,8 +102,6 @@ TWRunner >> processName [
 TWRunner >> runTestMessage: aTWMessage [
 
 	watched ifNotNil: [ watched testId: aTWMessage uuid ].
-	[ connection close "Disconnect because some tests might mess with the connection. This forces us to reconnect, but longer tests will lose the connection anyway." ]
-		onErrorDo: [ "Ignore, we want it closed." ].
 	[ self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ] ]
 		onErrorDo: [ :e |
 			"If there is an unhandled error, requeue the tests message."
@@ -110,6 +109,21 @@ TWRunner >> runTestMessage: aTWMessage [
 			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ].
 	watched ifNotNil: [ watched testId: nil ]
 
+]
+
+{ #category : #accessing }
+TWRunner >> start [
+
+	super start.
+	TKTConfiguration serviceManager services
+		detect: [ :aService | aService name = 'TWRunnerHeartbeatService' ]
+		ifFound: [ :oldService | oldService stop ].
+	heartbeatService := TKTParameterizableService new.
+	heartbeatService
+		name: 'TWRunnerHeartbeatService';
+		stepDelay: 1 second;
+		step: [ [ connection writeHeartbeatIfNeeded ] onErrorDo: [  ] ];
+		start
 ]
 
 { #category : #operations }
