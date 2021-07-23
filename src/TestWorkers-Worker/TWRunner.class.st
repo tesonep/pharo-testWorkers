@@ -70,15 +70,19 @@ TWRunner >> executionResponseOf: aTWMessage withResult: testResults [
 TWRunner >> handleMaybeDuplicateOf: aTWMessage answering: aValuable [
 
 	| answer |
-
-	messagesSent
-		at: aTWMessage uuid
-		ifPresent: [ :message | ^ message sendOn: connection ].
+	messagesSent at: aTWMessage uuid ifPresent: [ :message | 
+		self ensureNetworkSuccess: [
+			^ message sendOn: connection ] ].
 
 	answer := aValuable value.
 
 	messagesSent at: aTWMessage uuid put: answer.
-	answer sendOn: connection
+	
+	"Try to send the message until we succeed.
+	There is no point in continuing if we have a network error.
+	We will probably not be able to get the next message anyways and
+	losing the executed message is unacceptable."
+	self ensureNetworkSuccess: [ answer sendOn: connection ]
 ]
 
 { #category : #configuration }
@@ -96,7 +100,13 @@ TWRunner >> processName [
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
-	self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ]
+	[ connection close "Disconnect because some tests might mess with the connection. This forces us to reconnect, but longer tests will lose the connection anyway." ]
+		onErrorDo: [ "Ignore, we want it closed." ].
+	[ self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ] ]
+		onErrorDo: [ :e |
+			"If there is an unhandled error, requeue the tests message."
+			self traceError: e.
+			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ]
 
 ]
 
