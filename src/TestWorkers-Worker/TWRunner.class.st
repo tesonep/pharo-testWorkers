@@ -153,6 +153,7 @@ TWRunner >> stop [
 	
 	super stop.
 	watched ifNotNil: [ watched stop. watched := nil ].
+	heartbeatService ifNotNil: [ heartbeatService stop ]
 ]
 
 { #category : #operations }

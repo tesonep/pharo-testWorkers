@@ -4,8 +4,7 @@ Class {
 	#instVars : [
 		'connection',
 		'subscription',
-		'listenerProcess',
-		'instanceId'
+		'listenerProcess'
 	],
 	#classVars : [
 		'Password',
@@ -52,26 +51,22 @@ TWAbstractConnected >> connection [
 
 { #category : #operations }
 TWAbstractConnected >> doConnect [
-	
-	connection isConnected 
-		ifTrue: [ connection close ].
-		
+
+	connection isConnected ifTrue: [ connection close ].
+
 	connection host: self serverHost.
 	connection port: self serverPort.
 	connection login: self username.
 	connection passcode: self password.
 
-	connection timeout: 5 "seconds".
-	connection heartbeat: 5 * 1000 / 2 "miliseconds".
+	connection timeout: 5. "seconds"
+	connection heartbeat: 5 * 1000 / 2. "miliseconds"
+	connection clearInbox.
 	connection open.
 
 	connection isConnected ifTrue: [ 
-		subscription := connection newSubscriptionTo: self inputQueueName.
-
 		self setSubscriptionOptions.
-		
-		connection write: subscription subscribeFrame.]
-	
+		connection write: self subscription subscribeFrame ]
 ]
 
 { #category : #operations }
@@ -123,20 +118,13 @@ TWAbstractConnected >> ensureStart [
 TWAbstractConnected >> initialize [
 
 	super initialize.
-	connection := StampClient new.
-	instanceId := UUID new
+	connection := StampClient new
 ]
 
 { #category : #configuration }
 TWAbstractConnected >> inputQueueName [ 
 
 	^ self subclassResponsibility 
-]
-
-{ #category : #operations }
-TWAbstractConnected >> instanceId [
-
-	^ instanceId
 ]
 
 { #category : #configuration }
@@ -193,6 +181,22 @@ TWAbstractConnected >> processRequest [
 ]
 
 { #category : #configuration }
+TWAbstractConnected >> queueNamed: aName [
+
+	^ self rqServer queues detect: [ :e | e name = aName ].
+]
+
+{ #category : #configuration }
+TWAbstractConnected >> rqServer [
+
+	^ RQServer new
+		  host: self serverHost;
+		  username: self username;
+		  password: self password;
+		  yourself
+]
+
+{ #category : #configuration }
 TWAbstractConnected >> serverHost [
 
 	^ self class serverHost
@@ -206,12 +210,10 @@ TWAbstractConnected >> serverPort [
 
 { #category : #operations }
 TWAbstractConnected >> setSubscriptionOptions [
-	subscription 
+
+	self subscription
 		clientIndividualAck;
-		prefetchCount: 1;
-		id: instanceId.
-	subscription subscribeFrame persistent: true
-	
+		prefetchCount: 1
 ]
 
 { #category : #operations }
@@ -235,13 +237,18 @@ TWAbstractConnected >> startListener [
 { #category : #operations }
 TWAbstractConnected >> stop [
 
-	[ 
-	connection write: subscription unsubscribeFrame.
-	connection close ]
-		on: ZnIncomplete , Error
-		do: [ "If the message is incomplete I don't care""I am closing it" ].
+	[connection close] on: ZnIncomplete, Error do: [ 
+		"If the message is incomplete I don't care"
+		"I am closing it" ].
 
 	listenerProcess ifNotNil: [ listenerProcess terminate ]
+]
+
+{ #category : #operations }
+TWAbstractConnected >> subscription [
+
+	^ subscription ifNil: [ 
+		  subscription := connection newSubscriptionTo: self inputQueueName ]
 ]
 
 { #category : #'tracing errors ' }

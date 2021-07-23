@@ -3,7 +3,8 @@ Class {
 	#superclass : #TWAbstractConnected,
 	#instVars : [
 		'heartbeatService',
-		'testId'
+		'testId',
+		'instanceId'
 	],
 	#category : #'TestWorkers-Worker'
 }
@@ -26,10 +27,23 @@ TWWatched >> informationRequested: aTWInfoRequest [
 		sendOn: connection to: aTWInfoRequest replyQueue] onErrorDo: [  ]
 ]
 
+{ #category : #initialization }
+TWWatched >> initialize [
+
+	super initialize.
+	instanceId := UUID new
+]
+
 { #category : #configuration }
 TWWatched >> inputQueueName [ 
 
 	^ TWWatchdogMessage workerExchange 
+]
+
+{ #category : #operations }
+TWWatched >> instanceId [
+
+	^ instanceId
 ]
 
 { #category : #configuration }

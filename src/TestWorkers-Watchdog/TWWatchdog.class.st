@@ -71,16 +71,8 @@ TWWatchdog >> ensureExchangeOn: server [
 
 { #category : #private }
 TWWatchdog >> ensureQueues [
-
-	| server |
-
-	server := RQServer new
-		host: self serverHost;
-		username: self username;
-		password: self password;
-		yourself.
 		
-	self ensureExchangeOn: server.
+	self ensureExchangeOn: self rqServer.
 
 ]
 
@@ -251,13 +243,15 @@ TWWatchdog >> templatePath [
 
 { #category : #'as yet unclassified' }
 TWWatchdog >> testForIdle [
-	self areAllInstancesIdle ifFalse: [idleSince := DateAndTime now].
+
+	self areAllInstancesIdle ifFalse: [ idleSince := DateAndTime now ].
 	idleSince
-		ifNotNil: 
-			[DateAndTime now - idleSince > 80 seconds
-				ifTrue: 
-					[idleSince := DateAndTime now.
-					TWClient uniqueInstance sendMissingRequests]]
+		ifNotNil: [ 
+			(DateAndTime now - idleSince > 80 seconds
+				and: [ (self queueNamed: 'testRequest') messages = 0 ])
+					ifTrue: [ 
+						idleSince := DateAndTime now.
+						TWClient uniqueInstance sendMissingRequests ] ]
 ]
 
 { #category : #initialization }
