@@ -99,7 +99,6 @@ TWAbstractConnected >> ensureNetworkSuccess: aBlock [
 	1 to: 3 do: [ :i | block value ].
 
 	[
-	connection closeIgnoringErrors. "Resolves some problems."
 	(Delay forSeconds: 1) wait.
 	block value ] repeat
 

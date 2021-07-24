@@ -101,13 +101,13 @@ TWRunner >> processName [
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
-	watched ifNotNil: [ watched testId: aTWMessage uuid ].
+	watched ifNotNil: [ watched test: aTWMessage name ].
 	[ self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ] ]
 		onErrorDo: [ :e |
 			"If there is an unhandled error, requeue the tests message."
 			self traceError: e.
 			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ].
-	watched ifNotNil: [ watched testId: nil ]
+	watched ifNotNil: [ watched test: nil ]
 
 ]
 

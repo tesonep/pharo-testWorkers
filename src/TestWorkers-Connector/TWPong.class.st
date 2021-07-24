@@ -6,7 +6,7 @@ Class {
 		'path',
 		'pid',
 		'host',
-		'testId'
+		'test'
 	],
 	#category : #'TestWorkers-Connector'
 }
@@ -79,13 +79,13 @@ TWPong >> replyQueue [
 ]
 
 { #category : #accessing }
-TWPong >> testId [
+TWPong >> test [
 
-	^ testId
+	^ test
 ]
 
 { #category : #accessing }
-TWPong >> testId: anObject [
+TWPong >> test: anObject [
 
-	testId := anObject
+	test := anObject
 ]

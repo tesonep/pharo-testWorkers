@@ -3,8 +3,8 @@ Class {
 	#superclass : #TWAbstractConnected,
 	#instVars : [
 		'heartbeatService',
-		'testId',
-		'instanceId'
+		'instanceId',
+		'test'
 	],
 	#category : #'TestWorkers-Worker'
 }
@@ -14,7 +14,7 @@ TWWatched >> executePing [
 
 	[TWPong new
 		instanceId: instanceId;
-		testId: testId;
+		test: test;
 		sendOn: connection] onErrorDo: [  ]
 ]
 
@@ -91,8 +91,8 @@ TWWatched >> start [
 ]
 
 { #category : #operations }
-TWWatched >> testId: anObject [
+TWWatched >> test: anObject [
 
-	testId := anObject.
+	test := anObject.
 	self executePing 
 ]

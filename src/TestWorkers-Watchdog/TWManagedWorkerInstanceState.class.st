@@ -79,7 +79,7 @@ TWManagedWorkerInstanceState >> stateName [
 ]
 
 { #category : #tests }
-TWManagedWorkerInstanceState >> testId [
+TWManagedWorkerInstanceState >> test [
 
 	^ nil
 	

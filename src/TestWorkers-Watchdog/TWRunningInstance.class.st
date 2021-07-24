@@ -46,7 +46,7 @@ TWRunningInstance >> pongReceived: aTWPong [
 	instance instanceId = aTWPong instanceId 
 		ifFalse: [ ^ self ].
 	
-	testId := aTWPong testId.
+	testId := aTWPong test.
 	lastPong := DateAndTime now
 	
 ]
@@ -58,7 +58,7 @@ TWRunningInstance >> stateName [
 ]
 
 { #category : #operations }
-TWRunningInstance >> testId [
+TWRunningInstance >> test [
 
 	^ testId
 	

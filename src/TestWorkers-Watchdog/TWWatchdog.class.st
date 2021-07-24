@@ -32,13 +32,13 @@ TWWatchdog class >> openExample [
 	^ watchdog
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #private }
 TWWatchdog >> areAllInstancesIdle [
 	^instances allSatisfy: 
 			[:anInstance |
 			anInstance timeSinceLastPong
-				ifNotNil: [:t | t > 80 seconds or: [ anInstance state testId isNil ] ]
-				ifNil: [ anInstance state testId isNil ] ]
+				ifNotNil: [:t | t > 80 seconds or: [ anInstance state test isNil ] ]
+				ifNil: [ anInstance state test isNil ] ]
 ]
 
 { #category : #'private-instances-control' }
@@ -153,7 +153,7 @@ TWWatchdog >> processName [
 	^ 'TWWatchdog'
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #operations }
 TWWatchdog >> processRequest [ 
 
 	super processRequest.
@@ -241,17 +241,17 @@ TWWatchdog >> templatePath [
 	^ rootDirectory / creationStrategy templateFolderName
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #'instances-control' }
 TWWatchdog >> testForIdle [
 
 	self areAllInstancesIdle ifFalse: [ idleSince := DateAndTime now ].
 	idleSince
 		ifNotNil: [ 
-			(DateAndTime now - idleSince > 80 seconds
-				and: [ (self queueNamed: 'testRequest') messages = 0 ])
+			(DateAndTime now - idleSince > 80 seconds)
 					ifTrue: [ 
 						idleSince := DateAndTime now.
-						TWClient uniqueInstance sendMissingRequests ] ]
+						((self queueNamed: 'testRequest') messages = 0)
+							ifTrue: [ TWClient uniqueInstance sendMissingRequests ] ] ]
 ]
 
 { #category : #initialization }
