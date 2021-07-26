@@ -3,7 +3,7 @@ Class {
 	#superclass : #TWMessage,
 	#instVars : [
 		'testResults',
-		'testClassName'
+		'testRequest'
 	],
 	#category : #'TestWorkers-Connector'
 }
@@ -18,7 +18,7 @@ TWTestResponse >> execute: client [
 TWTestResponse >> handleSendError: anError on: connection [
 
 	TWTestExecutionError new
-		testClassName: testClassName;
+		testRequest: testRequest;
 		exceptionMessage: anError class name printString , anError messageText printString;
 		serializedException: (self tryToSerialize: anError);
 		uuid: self uuid;
@@ -34,13 +34,13 @@ TWTestResponse >> queueName [
 ]
 
 { #category : #accessing }
-TWTestResponse >> testClassName [
-	^ testClassName
+TWTestResponse >> testRequest [
+	^ testRequest
 ]
 
 { #category : #accessing }
-TWTestResponse >> testClassName: anObject [
-	testClassName := anObject
+TWTestResponse >> testRequest: anObject [
+	testRequest := anObject
 ]
 
 { #category : #accessing }

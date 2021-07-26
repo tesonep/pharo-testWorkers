@@ -2,9 +2,9 @@ Class {
 	#name : #TWTestExecutionError,
 	#superclass : #TWMessage,
 	#instVars : [
-		'testClassName',
 		'exceptionMessage',
-		'serializedException'
+		'serializedException',
+		'testRequest'
 	],
 	#category : #'TestWorkers-Connector'
 }
@@ -49,11 +49,11 @@ TWTestExecutionError >> serializedException: anObject [
 ]
 
 { #category : #accessing }
-TWTestExecutionError >> testClassName [
-	^ testClassName
+TWTestExecutionError >> testRequest [
+	^ testRequest
 ]
 
 { #category : #accessing }
-TWTestExecutionError >> testClassName: anObject [
-	testClassName := anObject
+TWTestExecutionError >> testRequest: anObject [
+	testRequest := anObject
 ]
