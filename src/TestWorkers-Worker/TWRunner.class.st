@@ -52,7 +52,7 @@ TWRunner >> doRunTestMessage: aTWMessage [
 TWRunner >> executionErrorResponseOf: aTWMessage withError: anError [
 
 	^ TWTestExecutionError new
-		  testClassName: aTWMessage testClassName;
+		  testRequest: aTWMessage;
 		  exceptionMessage:
 			  anError class name printString , anError messageText printString;
 		  serializedException: nil;
@@ -159,6 +159,6 @@ TWRunner >> stop [
 { #category : #operations }
 TWRunner >> traceTestMessage: aTWMessage [
 
-	self traceCr: DateAndTime now asString , 'runTestMessage: class'
+	self traceCr: DateAndTime now asString , 'runTestMessage: '
 		, aTWMessage drTestsName , ' uuid: ' , aTWMessage uuid
 ]

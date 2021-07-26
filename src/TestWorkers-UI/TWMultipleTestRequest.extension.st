@@ -22,15 +22,3 @@ TWMultipleTestRequest >> drTestsName [
 	
 	^ ', ' join: (tests collect: [ :test | test key asString , ' >> ' , test value asString ])
 ]
-
-{ #category : #'*TestWorkers-UI' }
-TWMultipleTestRequest >> tests [
-
-	^ tests
-]
-
-{ #category : #'*TestWorkers-UI' }
-TWMultipleTestRequest >> tests: aCollection [
-
-	tests := aCollection
-]
