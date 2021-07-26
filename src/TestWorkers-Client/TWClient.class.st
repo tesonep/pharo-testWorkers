@@ -37,14 +37,7 @@ TWClient >> executionErrors [
 { #category : #'getting-info' }
 TWClient >> findWorkerExchanges [
 
-	| server |
-	server := RQServer new
-		          host: self serverHost;
-		          username: self username;
-		          password: self password;
-		          yourself.
-
-	^ server exchanges
+	^ self rqServer exchanges
 		  select: [ :anExchange | anExchange name beginsWith: 'workers' ]
 		  thenCollect: [ :anExchange | '/exchange/' , anExchange name ]
 ]
@@ -90,16 +83,7 @@ TWClient >> processName [
 { #category : #operations }
 TWClient >> purgePendingMessages [
 
-	| server q |
-
-	server := RQServer new
-		          host: self serverHost;
-		          username: self username;
-		          password: self password;
-		          yourself.
-
-	q := server queues detect: [ :e | e name = 'testRequest' ].
-	q purge.
+	(self queueNamed: 'testRequest') purge
 ]
 
 { #category : #accessing }
@@ -193,10 +177,17 @@ TWClient >> sendChanges [
 	repository currentCommit
 ]
 
+{ #category : #'as yet unclassified' }
+TWClient >> sendMissingRequests [
+	
+	requests do: [ :request |
+		self ensureNetworkSuccess: [ request sendOn: connection ] ]
+]
+
 { #category : #operations }
 TWClient >> setSubscriptionOptions [
 
-	subscription 
+	self subscription 
 		clientIndividualAck;
 		prefetchCount: 10.
 	

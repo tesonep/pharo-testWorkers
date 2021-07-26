@@ -3,7 +3,8 @@ Class {
 	#superclass : #TWAbstractConnected,
 	#instVars : [
 		'watched',
-		'messagesSent'
+		'messagesSent',
+		'heartbeatService'
 	],
 	#classVars : [
 		'UniqueInstance'
@@ -76,12 +77,13 @@ TWRunner >> handleMaybeDuplicateOf: aTWMessage answering: aValuable [
 
 	answer := aValuable value.
 
+	messagesSent at: aTWMessage uuid put: answer.
+	
 	"Try to send the message until we succeed.
 	There is no point in continuing if we have a network error.
 	We will probably not be able to get the next message anyways and
 	losing the executed message is unacceptable."
-	self ensureNetworkSuccess: [ answer sendOn: connection ].
-	messagesSent at: aTWMessage uuid put: answer
+	self ensureNetworkSuccess: [ answer sendOn: connection ]
 ]
 
 { #category : #configuration }
@@ -99,13 +101,29 @@ TWRunner >> processName [
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
-	connection close. "Disconnect because some tests might mess with the connection. This forces us to reconnect, but longer tests will lose the connection anyway."
+	watched ifNotNil: [ watched test: aTWMessage name ].
 	[ self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ] ]
 		onErrorDo: [ :e |
 			"If there is an unhandled error, requeue the tests message."
 			self traceError: e.
-			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ]
+			self ensureNetworkSuccess: [ aTWMessage sendOn: connection ] ].
+	watched ifNotNil: [ watched test: nil ]
 
+]
+
+{ #category : #accessing }
+TWRunner >> start [
+
+	super start.
+	TKTConfiguration serviceManager services
+		detect: [ :aService | aService name = 'TWRunnerHeartbeatService' ]
+		ifFound: [ :oldService | oldService stop ].
+	heartbeatService := TKTParameterizableService new.
+	heartbeatService
+		name: 'TWRunnerHeartbeatService';
+		stepDelay: 1 second;
+		step: [ [ connection writeHeartbeatIfNeeded ] onErrorDo: [  ] ];
+		start
 ]
 
 { #category : #operations }
@@ -135,6 +153,7 @@ TWRunner >> stop [
 	
 	super stop.
 	watched ifNotNil: [ watched stop. watched := nil ].
+	heartbeatService ifNotNil: [ heartbeatService stop ]
 ]
 
 { #category : #operations }

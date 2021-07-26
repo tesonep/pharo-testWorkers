@@ -2,21 +2,23 @@ Class {
 	#name : #TWWatched,
 	#superclass : #TWAbstractConnected,
 	#instVars : [
+		'heartbeatService',
 		'instanceId',
-		'heartbeatService'
+		'test'
 	],
 	#category : #'TestWorkers-Worker'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #operations }
 TWWatched >> executePing [
 
 	[TWPong new
 		instanceId: instanceId;
+		test: test;
 		sendOn: connection] onErrorDo: [  ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : #operations }
 TWWatched >> informationRequested: aTWInfoRequest [
 
 	[ 
@@ -29,7 +31,7 @@ TWWatched >> informationRequested: aTWInfoRequest [
 TWWatched >> initialize [
 
 	super initialize.
-	instanceId := UUID new.
+	instanceId := UUID new
 ]
 
 { #category : #configuration }
@@ -86,4 +88,11 @@ TWWatched >> start [
 		self executePing ].
 	heartbeatService start.
 
+]
+
+{ #category : #operations }
+TWWatched >> test: anObject [
+
+	test := anObject.
+	self executePing 
 ]

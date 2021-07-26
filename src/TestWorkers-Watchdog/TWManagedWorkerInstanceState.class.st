@@ -77,3 +77,10 @@ TWManagedWorkerInstanceState >> stateName [
 
 	^ self subclassResponsibility
 ]
+
+{ #category : #tests }
+TWManagedWorkerInstanceState >> test [
+
+	^ nil
+	
+]
