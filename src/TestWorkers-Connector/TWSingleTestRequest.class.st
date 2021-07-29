@@ -19,11 +19,6 @@ TWSingleTestRequest >> executionResponseFor: testResults [
 ]
 
 { #category : #accessing }
-TWSingleTestRequest >> name [
-	^ testClassName, '>>#', testSelector
-]
-
-{ #category : #accessing }
 TWSingleTestRequest >> testSelector [
 
 	^ testSelector

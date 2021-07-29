@@ -42,6 +42,13 @@ TWClient >> findWorkerExchanges [
 		  thenCollect: [ :anExchange | '/exchange/' , anExchange name ]
 ]
 
+{ #category : #'as yet unclassified' }
+TWClient >> idleWatchdog [
+
+	((self queueNamed: 'testRequest') messages = 0)
+		ifTrue: [ self sendMissingRequests ] 
+]
+
 { #category : #information }
 TWClient >> informationArrived: aTWInfoResponse [
 

@@ -35,11 +35,6 @@ TWTestRequest >> hasException [
 	^ false
 ]
 
-{ #category : #accessing }
-TWTestRequest >> name [
-	^ testClassName
-]
-
 { #category : #converting }
 TWTestRequest >> queueName [
 

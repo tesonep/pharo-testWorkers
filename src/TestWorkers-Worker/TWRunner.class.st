@@ -101,7 +101,7 @@ TWRunner >> processName [
 { #category : #operations }
 TWRunner >> runTestMessage: aTWMessage [
 
-	watched ifNotNil: [ watched test: aTWMessage name ].
+	watched ifNotNil: [ watched test: aTWMessage drTestsName ].
 	[ self handleMaybeDuplicateOf: aTWMessage answering: [ self doRunTestMessage: aTWMessage ] ]
 		onErrorDo: [ :e |
 			"If there is an unhandled error, requeue the tests message."
@@ -159,6 +159,6 @@ TWRunner >> stop [
 { #category : #operations }
 TWRunner >> traceTestMessage: aTWMessage [
 
-	self traceCr: DateAndTime now asString , 'runTestMessage: class'
-		, aTWMessage testClassName , ' uuid: ' , aTWMessage uuid
+	self traceCr: DateAndTime now asString , 'runTestMessage: '
+		, aTWMessage drTestsName , ' uuid: ' , aTWMessage uuid
 ]
