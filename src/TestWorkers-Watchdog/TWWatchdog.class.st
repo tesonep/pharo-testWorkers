@@ -34,11 +34,7 @@ TWWatchdog class >> openExample [
 
 { #category : #private }
 TWWatchdog >> areAllInstancesIdle [
-	^instances allSatisfy: 
-			[:anInstance |
-			anInstance timeSinceLastPong
-				ifNotNil: [:t | t > 80 seconds or: [ anInstance state test isNil ] ]
-				ifNil: [ anInstance state test isNil ] ]
+	^instances allSatisfy: [:anInstance | anInstance state test isNil ]
 ]
 
 { #category : #'private-instances-control' }
@@ -250,8 +246,7 @@ TWWatchdog >> testForIdle [
 			(DateAndTime now - idleSince > 80 seconds)
 					ifTrue: [ 
 						idleSince := DateAndTime now.
-						((self queueNamed: 'testRequest') messages = 0)
-							ifTrue: [ TWClient uniqueInstance sendMissingRequests ] ] ]
+						[ (TWIdle new) sendOn: connection ] onErrorDo: [  ] ] ]
 ]
 
 { #category : #initialization }
