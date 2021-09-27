@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'rootDirectory',
 		'instances',
-		'creationStrategy'
+		'creationStrategy',
+		'headless'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -141,7 +142,8 @@ TWWatchdog >> numberOfInstances: anInteger [
 				             directory: (creationStrategy
 						              instanceDirectorWithRoot: self rootDirectory
 						              andImageIndex: anIndex)
-				             on: self ]
+				             on: self
+				             headless: self headless ]
 		             as: OrderedCollection
 ]
 
@@ -172,6 +174,16 @@ TWWatchdog >> rootDirectory [
 { #category : #accessing }
 TWWatchdog >> rootDirectory: anObject [
 	rootDirectory := anObject
+]
+
+{ #category : #accessing }
+TWWatchdog >> headless [
+	^ headless ifNil: [true]
+]
+
+{ #category : #accessing }
+TWWatchdog >> headless: anObject [
+	headless := anObject
 ]
 
 { #category : #operations }
