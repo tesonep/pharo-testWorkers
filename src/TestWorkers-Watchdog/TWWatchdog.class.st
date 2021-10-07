@@ -4,7 +4,8 @@ Class {
 	#instVars : [
 		'rootDirectory',
 		'instances',
-		'creationStrategy'
+		'creationStrategy',
+		'idleSince'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
@@ -29,6 +30,11 @@ TWWatchdog class >> openExample [
 		openWithSpec.
 		
 	^ watchdog
+]
+
+{ #category : #private }
+TWWatchdog >> areAllInstancesIdle [
+	^instances allSatisfy: [:anInstance | anInstance state test isNil ]
 ]
 
 { #category : #'private-instances-control' }
@@ -61,16 +67,8 @@ TWWatchdog >> ensureExchangeOn: server [
 
 { #category : #private }
 TWWatchdog >> ensureQueues [
-
-	| server |
-
-	server := RQServer new
-		host: self serverHost;
-		username: self username;
-		password: self password;
-		yourself.
 		
-	self ensureExchangeOn: server.
+	self ensureExchangeOn: self rqServer.
 
 ]
 
@@ -156,6 +154,7 @@ TWWatchdog >> processRequest [
 
 	super processRequest.
 	instances do: [ :e | e heartbeat ].
+	self testForIdle
 ]
 
 { #category : #operations }
@@ -236,6 +235,18 @@ TWWatchdog >> templateName [
 TWWatchdog >> templatePath [ 
 
 	^ rootDirectory / creationStrategy templateFolderName
+]
+
+{ #category : #'instances-control' }
+TWWatchdog >> testForIdle [
+
+	self areAllInstancesIdle ifFalse: [ idleSince := DateAndTime now ].
+	idleSince
+		ifNotNil: [ 
+			(DateAndTime now - idleSince > 80 seconds)
+					ifTrue: [ 
+						idleSince := DateAndTime now.
+						[ (TWIdle new) sendOn: connection ] onErrorDo: [  ] ] ]
 ]
 
 { #category : #initialization }
