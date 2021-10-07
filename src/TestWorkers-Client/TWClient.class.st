@@ -164,7 +164,7 @@ TWClient >> runTestExecutionError: aTWTestExecutionError [
 	
 	executionErrors add: aTWTestExecutionError.
 	
-	onUpdateBlock ifNotNil: [ UIManager default defer: onUpdateBlock ]
+	onUpdateBlock ifNotNil: [ onUpdateBlock cull: aTWTestExecutionError ]
 ]
 
 { #category : #operations }
@@ -175,7 +175,7 @@ TWClient >> runTestResponse: aTWTestResponse [
 	
 	testResult mergeWith: aTWTestResponse testResults.
 	
-	onUpdateBlock ifNotNil: [ UIManager default defer: onUpdateBlock ]
+	onUpdateBlock ifNotNil: [ onUpdateBlock cull: aTWTestResponse ]
 ]
 
 { #category : #changes }
