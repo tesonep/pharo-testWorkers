@@ -51,26 +51,22 @@ TWAbstractConnected >> connection [
 
 { #category : #operations }
 TWAbstractConnected >> doConnect [
-	
-	connection isConnected 
-		ifTrue: [ connection close ].
-		
+
+	connection isConnected ifTrue: [ connection close ].
+
 	connection host: self serverHost.
 	connection port: self serverPort.
 	connection login: self username.
 	connection passcode: self password.
 
-	connection timeout: 5 "seconds".
-	connection heartbeat: 5 * 1000 / 2 "miliseconds".
+	connection timeout: 5. "seconds"
+	connection heartbeat: 5 * 1000 / 2. "miliseconds"
+	connection clearInbox.
 	connection open.
 
 	connection isConnected ifTrue: [ 
-		subscription := connection newSubscriptionTo: self inputQueueName.
-
 		self setSubscriptionOptions.
-		
-		connection write: subscription subscribeFrame.]
-	
+		connection write: self subscription subscribeFrame ]
 ]
 
 { #category : #operations }
@@ -103,8 +99,6 @@ TWAbstractConnected >> ensureNetworkSuccess: aBlock [
 	1 to: 3 do: [ :i | block value ].
 
 	[
-	[ connection close "Resolves some problems." ]
-		onErrorDo: [ "Ignore, we want it closed." ].
 	(Delay forSeconds: 1) wait.
 	block value ] repeat
 
@@ -123,7 +117,7 @@ TWAbstractConnected >> ensureStart [
 TWAbstractConnected >> initialize [
 
 	super initialize.
-	connection := StampClient new.
+	connection := StampClient new
 ]
 
 { #category : #configuration }
@@ -186,6 +180,22 @@ TWAbstractConnected >> processRequest [
 ]
 
 { #category : #configuration }
+TWAbstractConnected >> queueNamed: aName [
+
+	^ self rqServer queues detect: [ :e | e name = aName ].
+]
+
+{ #category : #configuration }
+TWAbstractConnected >> rqServer [
+
+	^ RQServer new
+		  host: self serverHost;
+		  username: self username;
+		  password: self password;
+		  yourself
+]
+
+{ #category : #configuration }
 TWAbstractConnected >> serverHost [
 
 	^ self class serverHost
@@ -199,10 +209,10 @@ TWAbstractConnected >> serverPort [
 
 { #category : #operations }
 TWAbstractConnected >> setSubscriptionOptions [
-	subscription 
+
+	self subscription
 		clientIndividualAck;
-		prefetchCount: 1.
-	
+		prefetchCount: 1
 ]
 
 { #category : #operations }
@@ -229,8 +239,15 @@ TWAbstractConnected >> stop [
 	[connection close] on: ZnIncomplete, Error do: [ 
 		"If the message is incomplete I don't care"
 		"I am closing it" ].
-	
-	listenerProcess ifNotNil: [ listenerProcess terminate ].
+
+	listenerProcess ifNotNil: [ listenerProcess terminate ]
+]
+
+{ #category : #operations }
+TWAbstractConnected >> subscription [
+
+	^ subscription ifNil: [ 
+		  subscription := connection newSubscriptionTo: self inputQueueName ]
 ]
 
 { #category : #'tracing errors ' }
