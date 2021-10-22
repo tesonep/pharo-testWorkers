@@ -9,17 +9,19 @@ Class {
 		'watchdog',
 		'pid',
 		'host',
-		'directQueue'
+		'directQueue',
+		'headless'
 	],
 	#category : #'TestWorkers-Watchdog'
 }
 
 { #category : #'instance creation' }
-TWManagedWorkerInstance class >> directory: aPath on: aWatchdog [
+TWManagedWorkerInstance class >> directory: aPath on: aWatchdog headless: aBoolean [
 
 	^ self basicNew
 		path: aPath;
 		watchdog: aWatchdog;
+		headless: aBoolean;
 		initialize;
 		yourself.
 ]
@@ -32,6 +34,16 @@ TWManagedWorkerInstance >> directQueue [
 { #category : #accessing }
 TWManagedWorkerInstance >> directQueue: anObject [
 	directQueue := anObject
+]
+
+{ #category : #accessing }
+TWManagedWorkerInstance >> headless [
+	^ headless
+]
+
+{ #category : #accessing }
+TWManagedWorkerInstance >> headless: anObject [
+	headless := anObject
 ]
 
 { #category : #'private - operations' }
@@ -53,7 +65,7 @@ TWManagedWorkerInstance >> doStart [
 
 	TWSubprocessWrapper
 		runWithoutWaitingShellCommand:
-			Smalltalk vm fileName ,' ', ' "', self imageName 
+			Smalltalk vm fileName , (self headless ifTrue: [' --headless '] ifFalse: [' ']), ' "', self imageName 
 			, '" eval --no-quit "' , startScript , '"'
 		workingDirectory: path fullName 
 ]
