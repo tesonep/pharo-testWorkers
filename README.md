@@ -31,7 +31,7 @@ Execute the following Metacello baseline load script
 
 ```Smalltalk
 Metacello new
-	baseline: 'pharo-testWorkers';
+	baseline: 'TestWorkers';
 	repository: 'github://tesonep/pharo-testWorkers/repository';
 	load
 ```
