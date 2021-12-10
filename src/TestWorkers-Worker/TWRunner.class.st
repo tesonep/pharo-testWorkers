@@ -52,7 +52,7 @@ TWRunner >> doRunTestMessage: aTWMessage [
 TWRunner >> executionErrorResponseOf: aTWMessage withError: anError [
 
 	^ TWTestExecutionError new
-		  testClassName: aTWMessage testClassName;
+		  testRequest: aTWMessage;
 		  exceptionMessage:
 			  anError class name printString , anError messageText printString;
 		  serializedException: nil;

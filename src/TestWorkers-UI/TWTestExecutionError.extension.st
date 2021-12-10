@@ -3,11 +3,11 @@ Extension { #name : #TWTestExecutionError }
 { #category : #'*TestWorkers-UI' }
 TWTestExecutionError >> drTestsBrowse [
 
-	(self class environment at: testClassName) browse
+	testRequest drTestsBrowse
 ]
 
 { #category : #'*TestWorkers-UI' }
 TWTestExecutionError >> drTestsName [
 	
-	^ testClassName , ' - ' , exceptionMessage
+	^ testRequest drTestsName , ' - ' , exceptionMessage
 ]

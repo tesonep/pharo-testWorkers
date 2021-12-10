@@ -1,22 +1,11 @@
 Class {
 	#name : #TWSingleTestRequest,
-	#superclass : #TWTestRequest,
+	#superclass : #TWClassTestRequest,
 	#instVars : [
 		'testSelector'
 	],
 	#category : #'TestWorkers-Connector'
 }
-
-{ #category : #testing }
-TWSingleTestRequest >> executionResponseFor: testResults [
-
-	^ TWSingleTestResponse new
-		  testResults: testResults;
-		  testClassName: self testClassName;
-		  testSelector: self testSelector;
-		  uuid: self uuid;
-		  yourself
-]
 
 { #category : #accessing }
 TWSingleTestRequest >> testSelector [
