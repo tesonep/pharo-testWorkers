@@ -181,8 +181,7 @@ TWAbstractConnected >> processRequest [
 
 { #category : #configuration }
 TWAbstractConnected >> queueNamed: aName [
-
-	^ self rqServer queues detect: [ :e | e name = aName ].
+	^self queueNamed: aName ifNone: [self error: 'The queue doesn''t exixts!']
 ]
 
 { #category : #configuration }

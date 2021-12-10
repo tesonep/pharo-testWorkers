@@ -89,8 +89,7 @@ TWClient >> processName [
 
 { #category : #operations }
 TWClient >> purgePendingMessages [
-
-	(self queueNamed: 'testRequest') purge
+	(self queueNamed: 'testRequest' ifNone: [^self]) purge
 ]
 
 { #category : #accessing }
