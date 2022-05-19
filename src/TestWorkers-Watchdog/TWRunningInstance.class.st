@@ -25,6 +25,12 @@ TWRunningInstance >> initialize [
 	lastPong := DateAndTime now.
 ]
 
+{ #category : #testing }
+TWRunningInstance >> isRunning [
+
+	^ true
+]
+
 { #category : #operations }
 TWRunningInstance >> killed: aTWKilled [
 

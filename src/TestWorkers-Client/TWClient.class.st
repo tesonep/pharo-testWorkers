@@ -123,6 +123,31 @@ TWClient >> resetResults [
 ]
 
 { #category : #running }
+TWClient >> runMultipleTest: aMultipleTest [
+
+	| request |
+	
+	request := TWMultipleTestRequest new
+		tests: aMultipleTest tests;
+		yourself.
+		
+	self runRequest: request
+
+		
+]
+
+{ #category : #running }
+TWClient >> runRequest: aTWTestRequest [
+
+	requests at: aTWTestRequest uuid asString put: aTWTestRequest.
+	
+	"RabbitMQ likes to close the connection. This ensures we retry until we are able to connect again."
+	self ensureNetworkSuccess: [ aTWTestRequest sendOn: connection ]
+
+	
+]
+
+{ #category : #running }
 TWClient >> runSingleTest: aSingleTest [ 
 
 	| request |
@@ -132,27 +157,21 @@ TWClient >> runSingleTest: aSingleTest [
 		testSelector: aSingleTest testSelector;
 		yourself.
 		
-	requests at: request uuid asString put: request.
-	
-	"RabbitMQ likes to close the connection. This ensures we retry until we are able to connect again."
-	self ensureNetworkSuccess: [ request sendOn: connection ]
+	self runRequest: request
 
 		
 ]
 
-{ #category : #operations }
+{ #category : #running }
 TWClient >> runTestClass: aTestCase [
 
 	| request |
 	
-	request := TWTestRequest new
+	request := TWClassTestRequest new
 		testClassName: aTestCase name;
 		yourself.
 		
-	requests at: request uuid asString put: request.
-	
-	"RabbitMQ likes to close the connection. This ensures we retry until we are able to connect again."
-	self ensureNetworkSuccess: [ request sendOn: connection ]
+	self runRequest: request
 
 	
 ]

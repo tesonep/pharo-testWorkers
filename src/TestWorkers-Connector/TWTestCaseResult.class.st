@@ -6,7 +6,8 @@ Class {
 		'testSelector',
 		'isExpectedFailure',
 		'exceptionMessage',
-		'exceptionStack'
+		'exceptionStack',
+		'exceptionDebugString'
 	],
 	#category : #'TestWorkers-Connector-Results'
 }
@@ -90,6 +91,12 @@ TWTestCaseResult >> exceptionClassName [
 ]
 
 { #category : #accessing }
+TWTestCaseResult >> exceptionDebugString [
+
+	^ exceptionDebugString
+]
+
+{ #category : #accessing }
 TWTestCaseResult >> exceptionMessage [
 	
 	^ exceptionMessage
@@ -153,9 +160,11 @@ TWTestCaseResult >> stackTrace [
 
 { #category : #initializing }
 TWTestCaseResult >> storeError: anException upTo: executingContext [
-	
 	exceptionMessage := anException messageText.
-	exceptionStack := self convertContext: anException signalContext upTo: executingContext
+	exceptionStack := self convertContext: anException signalContext
+				upTo: executingContext.
+	exceptionDebugString := String
+				streamContents: [:s | anException signalContext debugStackOn: s]
 ]
 
 { #category : #accessing }

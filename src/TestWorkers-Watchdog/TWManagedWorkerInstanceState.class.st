@@ -48,6 +48,12 @@ TWManagedWorkerInstanceState >> instance: anObject [
 	instance := anObject
 ]
 
+{ #category : #testing }
+TWManagedWorkerInstanceState >> isRunning [
+
+	^ false
+]
+
 { #category : #operations }
 TWManagedWorkerInstanceState >> killed: aTWKilled [ 
 	

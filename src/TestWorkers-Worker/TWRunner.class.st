@@ -34,7 +34,7 @@ TWRunner >> doExecuteTestCaseMessage: testMessage [
 		during: [ 			
 			[	testResults executingContext: thisContext.
 				testMessage buildSuite run: testResults ] 
-				on: Notification do: [ :e | e resume. ] ].
+				on: Notification do: [ :e | e pass ] ].
 	^ testResults
 ]
 
@@ -44,7 +44,7 @@ TWRunner >> doRunTestMessage: aTWMessage [
 	self traceTestMessage: aTWMessage.
 
 	^ [ self executionResponseOf: aTWMessage withResult: (self doExecuteTestCaseMessage: aTWMessage) ]
-		on: Exception
+		on: Exception - Notification
 		do: [ :anError | self executionErrorResponseOf: aTWMessage withError: anError ]
 ]
 
@@ -52,7 +52,7 @@ TWRunner >> doRunTestMessage: aTWMessage [
 TWRunner >> executionErrorResponseOf: aTWMessage withError: anError [
 
 	^ TWTestExecutionError new
-		  testClassName: aTWMessage testClassName;
+		  testRequest: aTWMessage;
 		  exceptionMessage:
 			  anError class name printString , anError messageText printString;
 		  serializedException: nil;
