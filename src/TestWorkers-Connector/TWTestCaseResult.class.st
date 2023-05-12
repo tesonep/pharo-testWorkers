@@ -6,7 +6,8 @@ Class {
 		'testSelector',
 		'isExpectedFailure',
 		'exceptionMessage',
-		'exceptionStack'
+		'exceptionStack',
+		'runTime'
 	],
 	#category : #'TestWorkers-Connector-Results'
 }
@@ -66,8 +67,11 @@ TWTestCaseResult >> drTestsBrowse [
 { #category : #ui }
 TWTestCaseResult >> drTestsName [
 
+	| duration |
+	duration := Duration milliSeconds: self runTime.
+
 	self hasException ifFalse: [ 
-		^ testClassName asString , ' >> ' , testSelector asString ].
+		^ testClassName asString , ' >> ' , testSelector asString , ' ( ', duration printString , ' )' ].
 	
 	^ String streamContents: [ :s | 
 		s 
@@ -77,7 +81,7 @@ TWTestCaseResult >> drTestsName [
 			nextPutAll: ' --> ';
 			nextPutAll: self exceptionClassName asString;
 			nextPutAll: ': ';
-			nextPutAll: self exceptionMessage	]
+			nextPutAll: self exceptionMessage , ' ( ', duration printString , ' )'	]
 	
 
 ]
@@ -131,6 +135,18 @@ TWTestCaseResult >> printOn: aStream [
 		space;
 		nextPut: $)
 	
+]
+
+{ #category : #accessing }
+TWTestCaseResult >> runTime [
+
+	^ runTime
+]
+
+{ #category : #accessing }
+TWTestCaseResult >> runTime: anObject [
+
+	runTime := anObject
 ]
 
 { #category : #testing }

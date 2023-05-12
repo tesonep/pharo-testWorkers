@@ -2,7 +2,9 @@ Class {
 	#name : #TWTestResults,
 	#superclass : #TestResult,
 	#instVars : [
-		'executingContext'
+		'executingContext',
+		'testCaseStartTimestamp',
+		'testCaseEndTimestamp'
 	],
 	#category : #'TestWorkers-Connector-Results'
 }
@@ -23,8 +25,9 @@ TWTestResults >> addError: aTestcase [
 TWTestResults >> addError: aTestCase with: anError [
 
 	super addError: (aTestCase asTWTestCaseResult
-			 storeError: anError upTo: executingContext;
-			 yourself)
+							 runTime: self calculateRunTime;
+							 storeError: anError upTo: executingContext;
+							 yourself)
 ]
 
 { #category : #adding }
@@ -37,20 +40,34 @@ TWTestResults >> addFailure: aTestcase [
 TWTestResults >> addFailure: aTestCase with: anError [
 
 	super addFailure: (aTestCase asTWTestCaseResult
-			 storeError: anError upTo: executingContext;
-			 yourself)
+								 runTime: self calculateRunTime;
+								 storeError: anError upTo: executingContext;
+								 yourself)
 ]
 
 { #category : #adding }
 TWTestResults >> addPass: aTestCase [
 
-	super addPass: aTestCase asTWTestCaseResult
+	super addPass: (aTestCase asTWTestCaseResult
+			 runTime: self calculateRunTime;
+			 yourself)
 ]
 
 { #category : #adding }
 TWTestResults >> addSkip: aTestCase [
 
-	super addSkip: aTestCase asTWTestCaseResult
+	super addSkip: (aTestCase asTWTestCaseResult
+			 runTime: self calculateRunTime;
+			 yourself)
+]
+
+{ #category : #running }
+TWTestResults >> calculateRunTime [
+
+	testCaseStartTimestamp ifNil: [ ^ 0 ].
+	testCaseEndTimestamp ifNil: [ ^ 0 ].
+	
+	^ testCaseEndTimestamp - testCaseStartTimestamp 
 ]
 
 { #category : #accessing }
@@ -90,7 +107,11 @@ TWTestResults >> isSkippedFor: aClass selector: aString [
 TWTestResults >> runCase: aTestCase [
 	[
 	aTestCase announce: TestCaseStarted withResult: self.
-	aTestCase runCaseManaged.
+
+	[	testCaseStartTimestamp := Time millisecondClockValue.
+		aTestCase runCaseManaged]	
+		ensure: [testCaseEndTimestamp := Time millisecondClockValue].
+	
 	aTestCase announce: TestCaseEnded  withResult: self.
 	self addPass: aTestCase]
 		on: self class failure , self class skip, self class warning, self class error
