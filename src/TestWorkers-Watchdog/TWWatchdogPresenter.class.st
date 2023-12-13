@@ -10,8 +10,8 @@ Class {
 	#category : #'TestWorkers-Watchdog-UI'
 }
 
-{ #category : #specs }
-TWWatchdogPresenter class >> defaultSpec [
+{ #category : #layout }
+TWWatchdogPresenter class >> defaultLayout [
 
 	^ SpBoxLayout newVertical 
 			add: #instanceTable;
@@ -102,7 +102,7 @@ TWWatchdogPresenter >> startSelectedInstance [
 { #category : #initialization }
 TWWatchdogPresenter >> stop [ 
 
-	SpNotification dispatchInfoTo: self application message: 'Watchdog stopped'. 
+	UIManager default inform: 'Watchdog stopped'. 
 
 	updateProcess ifNotNil: [ updateProcess terminate ].
 	self watchdog stop

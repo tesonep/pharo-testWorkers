@@ -13,5 +13,7 @@ TWCurrentPharoCommitCreationStrategy class >> description [
 { #category : #accessing }
 TWCurrentPharoCommitCreationStrategy >> imageUrl [
 
-	^ ('http://files.pharo.org/image/90/{1}.zip' format: { SystemVersion current imageName }) asUrl
+	^ ('http://files.pharo.org/image/{1}/{2}.zip' format: {
+			   (SystemVersion current majorMinor: '').
+			   SystemVersion current imageName }) asUrl
 ]

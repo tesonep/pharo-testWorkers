@@ -13,5 +13,6 @@ TWLatestPharoCreationStrategy class >> description [
 { #category : #accessing }
 TWLatestPharoCreationStrategy >> imageUrl [
 
-	^ 'http://files.pharo.org/image/90/latest-64.zip' asUrl
+	^ ('http://files.pharo.org/image/{1}/latest-64.zip' format:
+		   { (SystemVersion current majorMinor: '') }) asUrl
 ]

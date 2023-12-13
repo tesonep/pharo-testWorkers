@@ -8,5 +8,5 @@ Class {
 TWClassAdded >> fromAnnouncement: aClassAdded [
 
 	super fromAnnouncement: aClassAdded.
-	definition := aClassAdded classAffected definition
+	definition := aClassAdded classAffected definitionString
 ]

@@ -35,9 +35,12 @@ TWCollectChangesInMemoryCommitTest >> testAddingAMethodProduceAChangeForTheClass
 TWCollectChangesInMemoryCommitTest >> testChangingAClassHasTheNewDefinition [
 
 	| newDefinition change |
-	
-	self newClass: #TWExistingClass superclass: TestCase with: #(a) uses: #().
-	newDefinition := existingClass definition.
+	self
+		newClass: #TWExistingClass
+		superclass: TestCase
+		with: #( a )
+		uses: #(  ).
+	newDefinition := existingClass definitionString.
 
 	change := self findChangeOf: #TWExistingClass.
 	self assert: change newDefinition equals: newDefinition
@@ -47,10 +50,13 @@ TWCollectChangesInMemoryCommitTest >> testChangingAClassHasTheNewDefinition [
 TWCollectChangesInMemoryCommitTest >> testChangingAClassHasTheOldDefinition [
 
 	| oldDefinition change |
-	
-	oldDefinition := existingClass definition.
+	oldDefinition := existingClass definitionString.
 
-	self newClass: #TWExistingClass superclass: TestCase with: #(a) uses: #().
+	self
+		newClass: #TWExistingClass
+		superclass: TestCase
+		with: #( a )
+		uses: #(  ).
 
 	change := self findChangeOf: #TWExistingClass.
 	self assert: change oldDefinition equals: oldDefinition
@@ -154,10 +160,14 @@ TWCollectChangesInMemoryCommitTest >> testChangingTheProtocolOfAMethodHasTheOldP
 TWCollectChangesInMemoryCommitTest >> testCreatingAClassIncludesDefinition [
 
 	| change aClass |
-	aClass := self newClass: #TWAClass superclass: TestCase with: #() uses: #().
+	aClass := self
+		          newClass: #TWAClass
+		          superclass: TestCase
+		          with: #(  )
+		          uses: #(  ).
 
 	change := self findChangeOf: #TWAClass.
-	self assert: change definition equals: aClass definition
+	self assert: change definition equals: aClass definitionString
 ]
 
 { #category : #'tests - adding' }
@@ -171,10 +181,12 @@ TWCollectChangesInMemoryCommitTest >> testCreatingAClassProduceAChangeForTheClas
 TWCollectChangesInMemoryCommitTest >> testRemovingAClassHasTheCorrectDefinition [
 
 	| oldDefinition |
-	oldDefinition := existingClass definition.
-	existingClass removeFromSystem.	
+	oldDefinition := existingClass definitionString.
+	existingClass removeFromSystem.
 
-	self assert: (self findChangeOf: #TWExistingClass) oldDefinition equals: oldDefinition
+	self
+		assert: (self findChangeOf: #TWExistingClass) oldDefinition
+		equals: oldDefinition
 ]
 
 { #category : #'tests - removing' }

@@ -9,8 +9,8 @@ Class {
 	#category : #'TestWorkers-UI'
 }
 
-{ #category : #specs }
-TWFailingTestPresenter class >> defaultSpec [
+{ #category : #layout }
+TWFailingTestPresenter class >> defaultLayout [
 
 	^ SpPanedLayout newTopToBottom
 		add: #stackList;

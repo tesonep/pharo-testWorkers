@@ -5,7 +5,7 @@ SystemVersion >> imageName [
 
 	| arch |
 
-	"Pharo9.0-SNAPSHOT.build.634.sha.658326a.arch.64bit.zip"
+	"Pharo11-SNAPSHOT.build.634.sha.658326a.arch.64bit.zip"
 
 	arch := Smalltalk vm is32bit 
 					ifTrue: [ '32bit' ]
@@ -15,8 +15,6 @@ SystemVersion >> imageName [
 		aStream 
 			nextPutAll: self type;
 			print: self major;
-			nextPut: $.;
-			print: self minor;
 			nextPutAll: '-SNAPSHOT.build.';
 			print: self build;
 			nextPutAll: '.sha.';

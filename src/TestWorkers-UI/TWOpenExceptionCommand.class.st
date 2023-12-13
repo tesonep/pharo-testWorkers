@@ -22,8 +22,8 @@ TWOpenExceptionCommand >> canBeRun [
 	^ super canBeRun and: [ self resultSelected content hasException ]
 ]
 
-{ #category : #hooks }
+{ #category : #executing }
 TWOpenExceptionCommand >> execute [
 
-	(TWFailingTestPresenter on: self resultSelected content) openWithSpec
+	(TWFailingTestPresenter on: self resultSelected content) open
 ]

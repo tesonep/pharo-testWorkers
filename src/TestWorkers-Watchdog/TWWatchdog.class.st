@@ -11,7 +11,7 @@ Class {
 	#category : #'TestWorkers-Watchdog'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 TWWatchdog class >> openExample [
 
 	<script>
@@ -28,7 +28,7 @@ TWWatchdog class >> openExample [
 	watchdog start.
 
 	(TWWatchdogPresenter on: watchdog) 
-		openWithSpec.
+		open.
 		
 	^ watchdog
 ]
@@ -91,6 +91,16 @@ TWWatchdog >> hasTemplate [
 
 	^ (self templatePath / self templateName ) exists 
 		
+]
+
+{ #category : #accessing }
+TWWatchdog >> headless [
+	^ headless ifNil: [true]
+]
+
+{ #category : #accessing }
+TWWatchdog >> headless: anObject [
+	headless := anObject
 ]
 
 { #category : #initialization }
@@ -173,16 +183,6 @@ TWWatchdog >> rootDirectory [
 { #category : #accessing }
 TWWatchdog >> rootDirectory: anObject [
 	rootDirectory := anObject
-]
-
-{ #category : #accessing }
-TWWatchdog >> headless [
-	^ headless ifNil: [true]
-]
-
-{ #category : #accessing }
-TWWatchdog >> headless: anObject [
-	headless := anObject
 ]
 
 { #category : #operations }

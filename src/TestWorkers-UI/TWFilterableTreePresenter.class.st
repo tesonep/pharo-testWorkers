@@ -11,7 +11,7 @@ TWFilterableTreePresenter >> childrenBlock: aFullBlockClosure [
 ]
 
 { #category : #initialization }
-TWFilterableTreePresenter >> initializeWidgets [
+TWFilterableTreePresenter >> initializePresenters [
 
 	labelPresenter := self newLabel.
 	listPresenter := self newTree.

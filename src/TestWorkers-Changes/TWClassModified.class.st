@@ -11,8 +11,8 @@ Class {
 TWClassModified >> fromAnnouncement: aClassModified [
 
 	super fromAnnouncement: aClassModified.
-	definition := aClassModified classAffected definition.
-	oldDefinition := aClassModified oldClassDefinition definition
+	definition := aClassModified classAffected definitionString.
+	oldDefinition := aClassModified oldClassDefinition definitionString
 ]
 
 { #category : #accessing }

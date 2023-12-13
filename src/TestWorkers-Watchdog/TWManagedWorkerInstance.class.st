@@ -36,16 +36,6 @@ TWManagedWorkerInstance >> directQueue: anObject [
 	directQueue := anObject
 ]
 
-{ #category : #accessing }
-TWManagedWorkerInstance >> headless [
-	^ headless
-]
-
-{ #category : #accessing }
-TWManagedWorkerInstance >> headless: anObject [
-	headless := anObject
-]
-
 { #category : #'private - operations' }
 TWManagedWorkerInstance >> doStart [
 
@@ -86,6 +76,16 @@ TWManagedWorkerInstance >> ensureRunning [
 TWManagedWorkerInstance >> hasAlreadyRegistredToWatchdogWithId: anId [
 
 	^ watchdog hasAnInstanceRegistredWithId: anId
+]
+
+{ #category : #accessing }
+TWManagedWorkerInstance >> headless [
+	^ headless
+]
+
+{ #category : #accessing }
+TWManagedWorkerInstance >> headless: anObject [
+	headless := anObject
 ]
 
 { #category : #'instance control' }

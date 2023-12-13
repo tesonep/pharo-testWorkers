@@ -22,20 +22,8 @@ TWConfigureWatchdogPresenter class >> defaultInstanceSize [
 	^ defaultInstanceSize ifNil: [ defaultInstanceSize := 3 ]
 ]
 
-{ #category : #specs }
-TWConfigureWatchdogPresenter class >> defaultRootDirectory [
-
-	^ defaultRootDirectory ifNil: [ defaultRootDirectory := FileLocator workingDirectory / 'runners' ].
-]
-
-{ #category : #specs }
-TWConfigureWatchdogPresenter class >> defaultRootDirectory: aFileReference [
-
-	defaultRootDirectory := aFileReference
-]
-
-{ #category : #specs }
-TWConfigureWatchdogPresenter class >> defaultSpec [
+{ #category : #layout }
+TWConfigureWatchdogPresenter class >> defaultLayout [
 
 	^ SpBoxLayout newVertical 
 		add: (SpGridLayout new
@@ -59,6 +47,18 @@ TWConfigureWatchdogPresenter class >> defaultSpec [
 ]
 
 { #category : #specs }
+TWConfigureWatchdogPresenter class >> defaultRootDirectory [
+
+	^ defaultRootDirectory ifNil: [ defaultRootDirectory := FileLocator workingDirectory / 'runners' ].
+]
+
+{ #category : #specs }
+TWConfigureWatchdogPresenter class >> defaultRootDirectory: aFileReference [
+
+	defaultRootDirectory := aFileReference
+]
+
+{ #category : #specs }
 TWConfigureWatchdogPresenter class >> defaultStrategyClass [
 
 	^ defaultStrategyClass ifNil: [ defaultStrategyClass := TWCurrentPharoCommitCreationStrategy ]
@@ -68,14 +68,12 @@ TWConfigureWatchdogPresenter class >> defaultStrategyClass [
 TWConfigureWatchdogPresenter class >> menuCommandOn: aBuilder [
 
 	<worldMenu>
-	
 	(aBuilder item: #'Start Worker Instances')
 		parent: #Tools;
-		action: [ self new openWithSpec ];
+		action: [ self new open ];
 		order: 18;
 		help: 'Let you start a new watchdog and a set of Worker instances';
-		icon: self taskbarIcon.
-
+		icon: (self iconNamed: self taskbarIconName)
 ]
 
 { #category : #initialization }
@@ -134,7 +132,7 @@ TWConfigureWatchdogPresenter >> start [
 	watchdog start.
 	
 	(TWWatchdogPresenter on: watchdog)
-		openWithSpec.
+		open.
 		
 	self window close.
 
